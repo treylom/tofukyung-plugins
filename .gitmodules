@@ -19,3 +19,6 @@
 [submodule "plugins/lesson-skill"]
 	path = plugins/lesson-skill
 	url = https://github.com/treylom/lesson-skill.git
+[submodule "plugins/lesson-a"]
+	path = plugins/lesson-a
+	url = https://github.com/treylom/lesson-a
