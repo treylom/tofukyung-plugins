@@ -1,60 +1,76 @@
 {
   "name": "tofukyung-plugins",
-  "description": "Claude Code skills & agents by tofukyung — prompt engineering, knowledge management, AI teaching, writing, and more.",
-  "version": "1.0.0",
-  "author": {
+  "owner": {
     "name": "tofukyung",
-    "url": "https://github.com/treylom"
+    "email": "treylom@users.noreply.github.com"
+  },
+  "metadata": {
+    "description": "Claude Code skills & agents by tofukyung — prompt engineering, knowledge management, AI teaching, writing, and more.",
+    "version": "1.0.0"
   },
   "plugins": [
     {
       "name": "prompt-engineering-skills",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/prompt-engineering-skills.git"
+      },
       "description": "아이디어를 실행 가능한 프롬프트로 정리해주는 도구",
-      "source": "./plugins/prompt-engineering-skills",
-      "category": "prompt-engineering",
-      "tags": ["prompt", "gpts", "workflow"]
+      "version": "1.0.0"
     },
     {
       "name": "knowledge-manager",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/knowledge-manager.git"
+      },
       "description": "자료를 수집해 지식 자산으로 정리해주는 도구",
-      "source": "./plugins/knowledge-manager",
-      "category": "knowledge-management",
-      "tags": ["obsidian", "notion", "research"]
+      "version": "1.0.0"
     },
     {
       "name": "tofu-at",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/tofu-at.git"
+      },
       "description": "에이전트 팀 운영 흐름을 설계해주는 도구",
-      "source": "./plugins/tofu-at",
-      "category": "agent-orchestration",
-      "tags": ["agents", "orchestration", "workflow"]
+      "version": "1.0.0"
     },
     {
       "name": "skills-2.0-upgrade",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/skills-2.0-upgrade.git"
+      },
       "description": "Claude Code 스킬을 점검하고 업그레이드해주는 도구",
-      "source": "./plugins/skills-2.0-upgrade",
-      "category": "developer-tools",
-      "tags": ["skills", "upgrade", "quality"]
+      "version": "1.0.0"
     },
     {
       "name": "qwen3-tts-claude-skill",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/qwen3-tts-claude-skill.git"
+      },
       "description": "텍스트를 음성 콘텐츠로 바꿔주는 도구",
-      "source": "./plugins/qwen3-tts-claude-skill",
-      "category": "audio",
-      "tags": ["tts", "audio", "korean"]
+      "version": "1.0.0"
     },
     {
       "name": "writing-assistant",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/writing-assistant.git"
+      },
       "description": "초안을 나다운 글로 다듬어주는 도구",
-      "source": "./plugins/writing-assistant",
-      "category": "writing",
-      "tags": ["writing", "persona", "style"]
+      "version": "1.0.0"
     },
     {
       "name": "lesson-skill",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/lesson-skill.git"
+      },
       "description": "Claude Code를 1:1 학습 흐름으로 익히게 해주는 도구",
-      "source": "./plugins/lesson-skill",
-      "category": "education",
-      "tags": ["learning", "teaching", "claude-code"]
+      "version": "1.0.0"
     }
   ]
 }
