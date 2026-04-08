@@ -71,6 +71,15 @@
       },
       "description": "Claude Code를 1:1 학습 흐름으로 익히게 해주는 도구",
       "version": "1.0.0"
+    },
+    {
+      "name": "deep-research",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/deep-research.git"
+      },
+      "description": "여러 소스를 모아 교차검증하고 인용이 달린 리서치 보고서를 만들어주는 도구",
+      "version": "2.1.0"
     }
   ]
 }

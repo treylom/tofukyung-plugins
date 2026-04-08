@@ -1,0 +1,26 @@
+{
+  "name": "deep-research",
+  "description": "7-Phase multi-source deep research engine with source verification, cross-validation, and inline citations.",
+  "version": "2.1.0",
+  "author": {
+    "name": "tofukyung",
+    "url": "https://github.com/treylom"
+  },
+  "homepage": "https://github.com/treylom/deep-research",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/treylom/deep-research.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "deep-research",
+    "fact-checking",
+    "source-verification",
+    "cross-validation",
+    "multi-source",
+    "claude-code-skill"
+  ],
+  "engines": {
+    "claude-code": ">=1.0.33"
+  }
+}
