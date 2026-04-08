@@ -1,0 +1,25 @@
+{
+  "name": "writing-assistant",
+  "description": "AI writing coach with persona carving loop, 6-genre playbooks, 10-dimension style card, and autoresearch feedback integration.",
+  "version": "1.0.0",
+  "author": {
+    "name": "tofukyung",
+    "url": "https://github.com/treylom"
+  },
+  "homepage": "https://github.com/treylom/writing-assistant",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/treylom/writing-assistant.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "writing",
+    "style-card",
+    "persona-carving",
+    "genre-playbooks",
+    "claude-code-skill"
+  ],
+  "engines": {
+    "claude-code": ">=1.0.33"
+  }
+}

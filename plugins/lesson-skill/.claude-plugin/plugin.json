@@ -1,0 +1,25 @@
+{
+  "name": "lesson",
+  "description": "인터랙티브 강의 엔진 — /lesson {과정명} {주차}로 수강생 1:1 강의 진행. 수강생 프로필 기반 적응형 학습, 교시별 실습, 감자재배법 페다고지.",
+  "version": "1.0.0",
+  "author": {
+    "name": "tofukyung",
+    "url": "https://github.com/treylom"
+  },
+  "homepage": "https://github.com/treylom/tofukyung-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/treylom/tofukyung-plugins.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "lesson",
+    "interactive-teaching",
+    "pedagogy",
+    "adaptive-learning",
+    "claude-code-skill"
+  ],
+  "engines": {
+    "claude-code": ">=1.0.33"
+  }
+}
