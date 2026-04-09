@@ -7,10 +7,7 @@
     "url": "https://github.com/treylom"
   },
   "homepage": "https://github.com/treylom/tofukyung-plugins",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/treylom/tofukyung-plugins.git"
-  },
+  "repository": "https://github.com/treylom/tofukyung-plugins",
   "license": "MIT",
   "keywords": [
     "lesson",

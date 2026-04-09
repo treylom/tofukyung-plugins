@@ -7,10 +7,7 @@
     "url": "https://github.com/treylom"
   },
   "homepage": "https://github.com/treylom/deep-research",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/treylom/deep-research.git"
-  },
+  "repository": "https://github.com/treylom/deep-research",
   "license": "MIT",
   "keywords": [
     "deep-research",
