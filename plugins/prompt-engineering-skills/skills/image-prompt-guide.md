@@ -4,7 +4,7 @@ description: AI 이미지 생성 프롬프트 가이드. 공냥이(@specal1849)�
 references:
   - prompt-engineering-guide
   - context-engineering-collection
-version: 1.6.0
+version: 1.10.0
 created: 2025-12-28
 author: Claude Code (공냥이(@specal1849)님 자료 기반)
 source_credits:
@@ -298,7 +298,7 @@ Create high-quality, vertical layout infographic
 "watercolor illustration"
 ```
 
-**주의**: 저작권 이슈 가능, 일부 플랫폼에서 특정 아티스트 이름 차단
+**주의**: 저작권 이슈 가능, 일부 플랫폼에서 특정 아티스트 이름 차단 (⚠️ ChatGPT는 생존 아티스트명 하드 블록)
 
 ### 5.3 카메라/렌즈 용어 활용
 
@@ -670,7 +670,7 @@ Create high-quality, vertical layout infographic
 
 ---
 
-## 15. 동영상 프롬프트 JSON 구조 (Veo/Sora 등)
+## 15. 동영상 프롬프트 JSON 구조 (Veo/Kling 등)
 
 > **핵심 원칙**: 이미지와 동일하게 JSON으로 구조를 잡고, 유연한 설명이 필요한 부분만 자연어로 작성합니다.
 
@@ -737,6 +737,85 @@ Create high-quality, vertical layout infographic
 - [ ] 오디오 요소가 포함되었는가? (대화/효과음/배경음)
 - [ ] 길이(duration)가 명시되었는가?
 - [ ] 제외할 요소(negative)가 정리되었는가?
+- [ ] 비영어 대사 시 영어 감정/말투 메타 지시가 함께 들어갔는가? (15.6 참조)
+
+### 15.6 비영어 대사 자연스럽게 만들기 (Veo / Sora / Seedance / Kling 공통)
+
+> **핵심 원칙**: 비영어 대사를 그대로만 넣으면 표정·억양이 어색해진다. 괄호 안에 **언어 표시 + 영어로 작성한 감정/말투 묘사**를 함께 적으면 자연스러워진다.
+>
+> 출처: [@itsyun_ai](https://www.threads.com/@itsyun_ai/post/DXyxUwXghcR) (Seedance 한국어 대사 검증, 2026-05-01). 시나리오 작법(stage direction) 컨벤션이라 동영상 모델 전반에 일반화 가능.
+
+#### 패턴
+
+```
+Dialogue - {Character}: ({English emotion/manner descriptor} in {Target Language}{, additional nuance}) "{대사 — 모국어 그대로}"
+```
+
+- **언어 표시**: `in Korean`, `in Japanese`, `in Spanish` 등 (필수)
+- **감정/말투 묘사**: 영어 형용사·부사 (Whispering, angrily, dripping with rage, gleefully …)
+- **추가 nuance**: 상세 컨텍스트 (with intense focus, voice cracking, barely audible)
+
+#### 예시
+
+| 시나리오 | 프롬프트 |
+|----------|---------|
+| 한국어 / 진지한 속삭임 | `Dialogue - Man: (Whispering in Korean with intense focus) "알파... 작전 개시."` |
+| 한국어 / 분노 | `Dialogue - Wife: (Speaking angrily in Korean, voice dripping with rage) "뭐해?!!!"` |
+| 일본어 / 부드러움 | `Dialogue - Woman: (Speaking softly in Japanese with a gentle smile) "ありがとう。"` |
+| 스페인어 / 흥분 | `Dialogue - Boy: (Shouting excitedly in Spanish) "¡Vamos!"` |
+| 중국어 / 슬픔 | `Dialogue - Mother: (Speaking sorrowfully in Mandarin, voice cracking) "回家吧。"` |
+
+#### 감정 키워드 사전 (영어로 작성 권장)
+
+| 감정 | 영어 키워드 |
+|------|------------|
+| 속삭임 | Whispering, in a low voice, barely audible |
+| 분노 | angrily, dripping with rage, seething, fuming |
+| 슬픔 | sorrowfully, voice cracking, with a trembling voice |
+| 진지함 | with intense focus, gravely, solemnly |
+| 즐거움 | cheerfully, gleefully, with a bright smile |
+| 놀람 | gasping, wide-eyed, in shock |
+| 두려움 | trembling, voice shaking, in a hushed tone |
+| 다정함 | warmly, tenderly, softly |
+
+#### 적용 가능 모델
+
+| 모델 | 검증 상태 | 비고 |
+|------|----------|------|
+| **Seedance** | ✅ 검증됨 | itsyun_ai (2026-05-01, 한국어) |
+| **Veo 3.1** | ⚠️ 일반화 적용 | 네이티브 다국어 음성 지원, 동일 패턴 호환 예상 |
+| **Sora 2** | ⚠️ 일반화 적용 | 대화 프롬프트 stage direction 컨벤션 학습 |
+| **Kling 3.0** | ⚠️ 일반화 적용 | 영어 메타 지시 인식 |
+
+> ⚠️ 표시는 패턴 자체가 모델 비종속(시나리오 작법 컨벤션)이라 **이론적으로 적용 가능**하다는 의미. 모델별 미세 차이(억양·감정 깊이·발음)는 실제 생성으로 확인 필요.
+
+#### JSON 통합 예시 (15.1 단일 동영상 구조에 적용)
+
+```json
+{
+  "subject": "중년 남성, 어두운 부엌에서 라면을 끓이는 장면",
+  "action": "냄비를 들여다보며 가족이 깰까 조심스럽게 움직임",
+  "style": "시네마틱, 따뜻한 톤",
+  "camera": "slow dolly in, low angle",
+  "audio": {
+    "dialogue": "Dialogue - Man: (Whispering in Korean with guilt) \"오늘만이야...\"",
+    "sfx": "boiling water, gas stove ignition",
+    "music": "ambient, late-night soft piano"
+  },
+  "duration": "8초",
+  "details": "배경 시계 02:00 AM",
+  "negative": "bright light, multiple people"
+}
+```
+
+#### 안티패턴
+
+| ❌ 비효율 | ✅ 권장 |
+|---------|---------|
+| `"뭐해?!" (분노)` (한국어 메타) | `(Speaking angrily in Korean) "뭐해?!"` |
+| `Korean dialogue: "알파... 작전 개시."` (메타 분리) | 괄호 한 묶음 + in Korean 명시 |
+| `"안녕하세요" 라고 화내며 말한다` (서술문 혼합) | Dialogue 필드 + 괄호 메타로 분리 |
+| 감정만 쓰고 언어 누락: `(angrily) "뭐해?!"` | 항상 `in {Language}` 명시 (모델이 영어로 발화하는 사고) |
 
 ---
 
@@ -851,9 +930,16 @@ Style Rules: Do [가이드라인] / Don't [안티패턴]
 ## Skill Metadata
 
 **Created**: 2025-12-28
-**Version**: 1.9.0
+**Version**: 1.10.0
 **Author**: Claude Code (공냥이(@specal1849)님 자료 기반)
-**Last Updated**: 2026-03-08
+**Last Updated**: 2026-05-02
+**Changes v1.10.0** (2026-05-02):
+- **[NEW] 비영어 대사 자연스럽게 만들기 섹션 추가** (15.6): 언어 표시 + 영어 감정/말투 메타 지시 패턴. Seedance·Veo·Sora·Kling 공통 적용
+- **5개 시나리오 예시 추가**: 한/일/스페인/중국어 + 감정 키워드 사전(8 감정)
+- **JSON 통합 예시 추가**: 15.1 단일 동영상 구조에 적용 (audio.dialogue 필드)
+- **안티패턴 4건 추가**: 한국어 메타·메타 분리·서술문 혼합·언어 누락
+- **체크리스트 항목 추가**: "비영어 대사 시 영어 감정/말투 메타 지시 포함"
+- **출처**: [@itsyun_ai](https://www.threads.com/@itsyun_ai/post/DXyxUwXghcR) Threads 포스트 (Seedance 한국어 대사 검증, 2026-05-01)
 **Changes v1.9.0**:
 - **[NEW] NanoBanana2 (Gemini 3.1 Flash Image) 섹션 추가** (섹션 18): NB Pro vs NB2 비교, 서술형 프롬프트 전략, 5요소 프레임워크
 - **NB2 CJK 텍스트 렌더링 팁 추가**: 한국어 텍스트 200-300자 제한

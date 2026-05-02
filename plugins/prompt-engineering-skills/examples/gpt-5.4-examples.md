@@ -194,6 +194,6 @@ response = client.responses.create(
 
 ## 참고
 
-- 전체 XML 블록 목록: `gpt-5.4-prompt-enhancement.md`
+- 전체 XML 블록 목록: `gpt-5.5-prompt-enhancement.md`
 - 모델별 비교: `prompt-engineering-guide.md`
 - Context Engineering 원칙: `context-engineering-collection.md`

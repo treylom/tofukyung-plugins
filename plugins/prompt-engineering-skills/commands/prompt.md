@@ -1,7 +1,10 @@
 # /prompt - AI 프롬프트 생성기
 
-> **Version**: 2.1.0 | **Updated**: 2026-03-08
+> **Version**: 2.7.1 | **Updated**: 2026-05-02
 > **Model Rankings**: [LMArena Leaderboard](https://lmarena.ai) (2026년 3월 기준)
+> **이미지 프롬프트 소스**: [[OpenAI-gpt-image-2-Prompting-Guide-2026-04]] (공식 쿡북) + [[EvoLinkAI-awesome-gpt-image-2-prompts-2026-04]] (커뮤니티 200+ 케이스)
+> **Opus 4.7 / 4.6 공식 소스**: [platform.claude.com/docs — Claude 4 best practices](https://platform.claude.com/docs/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices) + [Adaptive thinking](https://platform.claude.com/docs/en/docs/build-with-claude/adaptive-thinking) + [Migrating to Claude 4](https://platform.claude.com/docs/en/docs/about-claude/models/migrating-to-claude-4) — **Opus 4.7과 4.6 모두 first-class 지원** (사용자 명시 시 4.6 코드 패턴 적용)
+> **GPT-5.5 공식 가이드**: 2026-04 발표 — [GPT-5.5 prompt guide](https://developers.openai.com/api/docs/guides/prompt-guidance?model=gpt-5.5) (outcome-first markdown 6섹션). GPT-5.4의 XML 12블록 stack과 **다른 패턴**이라 모델별 라우팅 적용.
 
 AI 모델별로 최적화된 프롬프트를 생성합니다.
 
@@ -54,6 +57,79 @@ $ARGUMENTS
 
 ---
 
+## 🤖 BATCH 모드 (프로그래밍 호출 — /deep-research, /tofu-at 워커용)
+
+**`$ARGUMENTS`가 `--batch`로 시작하면 인터랙티브 흐름을 전부 우회하고 프롬프트만 직접 출력합니다.**
+
+### 트리거 패턴
+```
+/prompt --batch {모델} {상세도} {지시문}
+Skill("prompt", "--batch Claude 상세 AI 에이전트 메모리 아키텍처 리서치")
+Skill("prompt", "--batch GPT-5.2 상세 Chain-of-Verification 핵심 주장 검증")
+```
+
+### Batch 파싱 규칙
+| 위치 | 값 예시 | 설명 |
+|------|--------|------|
+| `--batch` | (필수 플래그) | 인터랙티브 우회 신호 |
+| 1번째 토큰 | `Claude` / `GPT-5.2` / `GPT-5.4` / `GPT-5.5` / `Gemini` / `gpt-image` / `Gemini-Image` / `Seedream` | 타겟 모델 (모델별 최적화 블록 결정). `Claude`는 Opus 4.7 기본(adaptive thinking + effort=xhigh), `GPT-5.5`는 GPT-5.4 파라미터 계승 (API 미공개, Codex/ChatGPT 전용). 이미지 모델(`gpt-image`/`Gemini-Image`/`Seedream`) 지정 시 Step 5의 텍스트 모델 블록은 스킵하고 `image-prompt-guide.md`의 JSON 구조만 생성 |
+| 2번째 토큰 | `간결` / `보통` / `상세` | 프롬프트 상세도 |
+| 나머지 | 자유 텍스트 | 워커가 수행할 핵심 지시문 (목적 자동 감지) |
+
+### Batch 모드 워크플로우 (절대 인터랙티브 사용 금지)
+```
+1. $ARGUMENTS에서 --batch 플래그 제거
+2. 모델 / 상세도 / 지시문 파싱
+3. 지시문 → Step 1 목적 감지 테이블로 자동 라우팅
+4. IF 목적 ∈ {팩트체크, 리서치/조사}:
+     → research-prompt-guide.md 서브파일 Read 로드 (Step 2 「리서치/팩트체크 템플릿 자동 로드」 절차)
+     → IFCN 기반 베이스 템플릿(LoopFactChecker / QuickFactCheck / StructuredResearch_v1.0 등) 채택
+     → 사용자 지시문/주제로 placeholder 치환
+5. 모델별 필수 블록 적용:
+     - Claude → <default_to_action>, <use_parallel_tool_calls>
+     - GPT-5.2/5.4 → <output_verbosity_spec>, <web_search_rules>, <uncertainty_and_ambiguity>
+     - Gemini 3 → Constraints 최상단
+     - `gpt-image` / `Gemini-Image` / `Seedream` (이미지 전용) → 텍스트 모델 블록 스킵. `image-prompt-guide.md` Read 로드 → JSON 구조(purpose/hero/context/evidence/constraints) + Visual Re-description + Technical Specifications만 생성. Anti-Patterns 섹션에 "no text/watermark/logos, no post-processing, deliver raw PNG as-is" 포함
+6. CE 체크리스트(U자형, Lost-in-Middle 방지) 적용
+7. 프롬프트 코드블록 1개만 출력 → 응답 종료
+```
+
+### Batch 모드 절대 금지
+| # | 금지 행동 | 이유 |
+|---|----------|------|
+| 1 | `AskUserQuestion` 호출 | 워커는 사용자가 아님 (응답할 주체 없음) |
+| 2 | "어떻게 하시겠습니까?" 5가지 옵션 출력 | 워커가 "1번" 선택할 수 없음 |
+| 3 | "🔍 요청 분석 중..." 진행 메시지 | 부모 컨텍스트 오염 |
+| 4 | 메타 설명 / 부가 텍스트 | 호출자가 프롬프트만 필요 |
+| 5 | 5가지 선택지 / Step 3 / Step 4 / Step 5 진입 | 인터랙티브 분기 차단 |
+| 6 | 리서치/팩트체크인데 research-prompt-guide.md 미로드 | 통합의 핵심 — 누락 시 일반 XML로 격하됨 |
+
+### Batch 출력 형식 (오직 이것만)
+```
+[프롬프트 코드블록 1개]
+```
+↑ 위/아래에 어떠한 설명, 헤더, 옵션, 안내도 추가 금지.
+
+### Batch 모드 — Agent Worker Triad 템플릿 라우팅
+
+Batch 지시문에 다음 키워드 중 하나라도 포함되면, **Codex Triad Mode** 워커 템플릿을 적용합니다.
+
+**트리거 키워드**: `워커`, `3-Phase`, `three-phase`, `Codex 삼중`, `worker-triad`, `agent-worker`
+
+**적용 내용**: XML 프롬프트에 다음 블록을 필수 포함
+1. `<three_phase_structure>` — PLAN → EXECUTE → VERIFY
+2. `<codex_triad_decision_tree>` — exec / rescue / review 분기
+3. `<escalation_rules>` — 실패→rescue, 회귀→review, 3연속 실패→blocker
+4. `<state_recording>` — `.team-os/runtime/{TEAM_ID}/workers/{ROLE}.json` + `logs/{ROLE}.log`
+5. `<output_format>` — `{ role, final_phase_status, files_touched, summary, blockers? }` JSON
+
+**권위 있는 템플릿 명세**:
+`/home/tofu/AI/.claude/skills/tofu-at-spawn-templates/references/worker-templates.md#codex-triad-mode`
+
+Batch 호출 시 워커 템플릿이 자동 적용되며, `/tofu-at` 및 `/tofu-at-codex`의 STEP 7 스폰 로직이 이 규칙에 의존합니다.
+
+---
+
 ## 🔍 명시적 요소 확장 규칙 (Explicit Element Expansion)
 
 **원칙**: 사용자 입력이 간략해도, AI가 누락된 요소를 추론하여 **명시적으로 상세하게** 채웁니다.
@@ -82,6 +158,23 @@ $ARGUMENTS
 2. **단일 → 다중**: 하나의 키워드를 여러 관련 요소로 분해
 3. **추상 → 구체**: 개념적 설명을 실행 가능한 상세 사항으로 변환
 
+### 🖼️ 이미지 전용: 추상→시각 변환 (Visual Re-description)
+
+> **이미지 프롬프트에서 추상적 감성어는 모델의 좌표를 분산시켜 의도하지 않은 결과를 만든다.**
+> 반드시 구체적 시각 대비(before/after)로 재기술하여 어텐션을 집중시킨다.
+> Ref: @specal1849 이미지 프롬프트 이론 — Visual Re-description 패턴
+
+| 추상 표현 (❌ 금지) | 시각적 재기술 (✅ 사용) |
+|-------------------|---------------------|
+| "빠른 진정" | "붉고 거친 피부 vs 촉촉하고 편안해진 피부" |
+| "프리미엄" | "매트한 다크톤 패키징, 부드러운 간접 조명, 고급 질감 클로즈업" |
+| "신선함" | "이슬 맺힌 초록 잎, 물방울 클로즈업, 선명한 채도" |
+| "편안함" | "부드러운 니트 질감, 따뜻한 간접조명, 눈높이 앵글" |
+| "고급스러운" | "대리석 표면, 골드 액센트, 소프트 디퓨즈드 라이팅" |
+| "자연스러운" | "무광 피부 질감, 창가 자연광, 생활 소품이 보이는 배경" |
+
+**적용 규칙**: 이미지 프롬프트 생성 시 mood/details 필드에 추상어가 있으면 자동으로 시각적 재기술을 적용합니다.
+
 ---
 
 ## 목적별 추천 모델 (LMArena 기준)
@@ -90,14 +183,15 @@ $ARGUMENTS
 
 | 목적 | 1순위 | 2순위 | 3순위 |
 |------|-------|-------|-------|
-| **코딩/개발** | Claude Opus 4.6 | GPT-5.2 | Gemini 3 Pro |
-| **수학/논리** | GPT-5.2 | Gemini 3 Flash | Claude Opus 4.6 |
-| **글쓰기/창작** | Gemini 3 Pro | Gemini 3 Flash | Claude Opus 4.6 |
-| **종합/분석** | Gemini 3 Pro | Grok 4.1 | Claude Opus 4.6 |
-| **Hard Prompts** | Claude Opus 4.6 | Gemini 3 Pro | Grok 4.1 |
+| **코딩/개발** | **Claude Opus 4.7** (2026-04-16, `xhigh` effort) | GPT-5.5 Codex (2026-04-23) | GPT-5.2 / Gemini 3 Pro / **Opus 4.6** (안정성·기존 코드) |
+| **수학/논리** | GPT-5.2 | Gemini 3 Flash | Claude Opus 4.7 / 4.6 |
+| **글쓰기/창작** | Gemini 3 Pro | Gemini 3 Flash | Claude Opus 4.7 / 4.6 |
+| **종합/분석** | Gemini 3 Pro | Grok 4.1 | Claude Opus 4.7 / 4.6 |
+| **Hard Prompts** | **Claude Opus 4.7** | Gemini 3 Pro | Grok 4.1 / **Opus 4.6** (회귀 위험 낮음) |
+| **에이전틱 (1M context)** | **Claude Opus 4.7** (adaptive thinking + `task_budget`) | GPT-5.5 Codex (Browser Use) | GPT-5.4 / **Opus 4.6** (200K로 충분 시) |
 | **비전/멀티모달** | Gemini 3 Pro | Gemini 3 Flash | GPT-5.1 |
-| **이미지 생성** | gpt-image (GPT Image 1.5) | Gemini 3.1 Flash Image (NB2) | Gemini 3 Pro Image |
-| **이미지 편집** | gpt-image (ChatGPT) | Gemini 3 Pro Image | Seedream 4.5 |
+| **이미지 생성** | **gpt-image-2** (OpenAI, 2026-04) [⭐ NEW] | Gemini 3.1 Flash Image (NB2) | Gemini 3 Pro Image |
+| **이미지 편집** | **gpt-image-2** (ChatGPT) — identity/geometry/layout 보존 강점 | Gemini 3 Pro Image | Seedream 4.5 |
 | **Text-to-Video** | Veo 3.1 | Sora 2 | Sora 2 Pro |
 | **Image-to-Video** | Veo 3.1 | Wan 2.5 | Kling 2.6 Pro |
 
@@ -121,6 +215,299 @@ $ARGUMENTS
 
 ---
 
+## 🖼 gpt-image-2 핵심 원칙 (NEW v2.4.0 — 2026-04-24)
+
+> **출처**: OpenAI 공식 쿡북 + EvoLinkAI 커뮤니티 200+ 케이스 분석 ([[Image-Prompt-Guides-2026-04-MOC]])
+> **적용**: 이미지 목적 감지 시(Step 1) **자동으로 아래 원칙을 이미지 프롬프트에 반영**
+
+### 1. 구조 프레임워크 — "배경/장면 → 주체 → 디테일 → 제약"
+이미지 프롬프트는 항상 이 순서로. 어텐션 모델은 앞단 정보로 뒤를 해석하므로 매체/목적/주 피사체를 **앞에** 배치.
+
+### 2. 생성(Generate) vs 편집(Edit) 모드 분리
+- **생성 모드** (text → image): 배경→주체→디테일→제약 4단계
+- **편집 모드** (text + image → image): **"change only X" + "keep everything else the same"** 패턴 필수. 편집 반복마다 보존 리스트 재명시
+
+### 3. 구체성 & 구체적 시각어 (Visual Re-description)
+추상어 → 구체적 시각 증거로 재기술:
+- ❌ "프리미엄" → ✅ "matte dark packaging, soft indirect lighting, subtle metallic foil accent"
+- ❌ "시네마틱" → ✅ "35mm film grain, shallow DOF, warm color grading, golden hour rim light"
+
+### 4. 제약: 변경 vs 보존
+```
+[Exclusions]  no watermark, no extra text, no logos/trademarks
+[Invariants]  preserve identity/geometry/layout/brand elements
+```
+편집 시 매 반복마다 **보존 리스트 반복 명시**하여 drift 방지.
+
+### 5. 이미지 내 텍스트
+- 리터럴 텍스트 → **따옴표** 또는 **ALL CAPS**
+- 폰트/크기/색상/위치 명시
+- 까다로운 단어는 **letter-by-letter 철자 지시**
+- 텍스트 포함 시 **`quality="medium"` 이상 자동 상향**
+
+### 6. gpt-image-2 해상도 제약 (자동 검증)
+- 최대 긴 변 < 3840px, 두 변 모두 **16의 배수**
+- 종횡비 ≤ 3:1, 총 픽셀 655,360 ~ 8,294,400
+- 추천 해상도: 1024×1536 (HD 세로), 1536×1024 (HD 가로), 1024×1024 (정사각), 2560×1440 (2K)
+- `--ar 9:16`, `--ar 3:4` 등 플래그는 자동으로 16 배수 해상도로 변환
+
+### 7. 품질 레버 자동 선택
+| 설정 | 자동 선택 조건 |
+|------|---------------|
+| `low` | 대량 생성(5+), 지연 민감, 드래프트, 프리뷰 |
+| `medium` | 기본값 |
+| `high` | 텍스트 포함, 밀집 인포그래픽, 클로즈업 초상, 정체성 민감 편집, > 2K 해상도 |
+
+### 8. 포토리얼리즘 키워드
+- `photorealistic`, `real photograph`, `taken on a real camera`, `professional photography`
+- 필름 언어: `35mm film photography`, `film grain`, `natural color grading`, `unposed feel`
+- **안티패턴**: studio polish, staging 언어 금지 (candid/unposed 선호)
+
+### 9. 반복적 개선 전략
+- 긴 프롬프트 한 번보다 **clean base + 단일 변경 follow-up** 선호
+- 예: "make lighting warmer" → "remove the extra tree" → "restore original background"
+- 드리프트 발생 시 중요 디테일 **재명시**
+
+### 10. 네거티브 프롬프트 기본 스택 (자동 내장)
+Portrait/Realism 계열:
+```
+no plastic skin, no digital over-sharpening, no airbrushing,
+no blemishes, no oily skin, no watermark, no text
+```
+로고/UI 계열: `no watermark, no text, no logos/trademarks`
+인포그래픽: `no tiny text, no decorative clutter`
+
+> 상세 원칙·유스케이스 20+: [[OpenAI-gpt-image-2-Prompting-Guide-2026-04]]
+> 실전 프롬프트 200+: [[EvoLinkAI-awesome-gpt-image-2-prompts-2026-04]]
+
+---
+
+## 🧠 Claude Opus 4.7 / 4.6 핵심 원칙 (v2.7.0 — 2026-04-30)
+
+> **출처**: [platform.claude.com — Claude 4 best practices](https://platform.claude.com/docs/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices) + [Adaptive thinking](https://platform.claude.com/docs/en/docs/build-with-claude/adaptive-thinking) + [Migrating to Claude 4](https://platform.claude.com/docs/en/docs/about-claude/models/migrating-to-claude-4) (2026-04-16 공식)
+> **적용**: Claude 타겟 감지 시 자동으로 아래 블록을 프롬프트에 반영. **Opus 4.7과 4.6 모두 first-class** — 사용자가 4.6 명시하면 4.6 코드 패턴 사용 (4.7 마이그레이션 강요 금지).
+
+### 🔀 Opus 4.7 vs 4.6 라우팅 (디폴트: 4.7, 명시 시 4.6)
+
+| 사용자 표현 | 적용 모델 | 코드 패턴 |
+|------------|----------|----------|
+| "Opus 4.7", "최신 Opus", "claude-opus-4-7" | **Opus 4.7** | adaptive thinking + xhigh + task_budget |
+| "Opus 4.6", "이전 Opus", "기존 Opus", "claude-opus-4-6" | **Opus 4.6** | budget_tokens 사용 가능, temperature/top_p OK, prefill OK |
+| "비용 절감 Opus", "안정성 우선 Opus" | **Opus 4.6** | 회귀 위험 낮음, 200K context |
+| Opus 모델 미지정 + 일반 작업 | **Opus 4.7** (디폴트) | 신규 effort + task_budget |
+| 기존 4.6 프롬프트 마이그레이션 의뢰 | **Opus 4.6 유지** + 4.7 회귀 매트릭스 안내 | 사용자 결정 후 전환 |
+
+**4.6 → 4.7 전환 전 필수 회귀 체크**: `claude-4.7-prompt-strategies.md` Part 0.5 회귀 매트릭스 10개 항목 통과 후에만 전환.
+
+### 1. Breaking Changes — 구 Opus 4.6 프롬프트가 400 에러를 내는 지점
+
+| 항목 | Opus 4.6 (구) | Opus 4.7 (신) | 조치 |
+|------|--------------|--------------|------|
+| Extended thinking | `thinking: {type: "enabled", budget_tokens: 16000}` | `thinking: {type: "adaptive"}` 전용 | `budget_tokens` 삭제, `adaptive` 고정 |
+| Sampling params | `temperature`, `top_p`, `top_k` | 비기본값 시 **400 에러** | 완전 제거. 스케일링은 `effort`로만 |
+| Prefill | `messages: [..., {"role": "assistant", "content": "..."}]` (마지막 턴) | **400 에러** | Structured Outputs / `output_config.format` / system 지시로 이전 |
+| Thinking display | `display: "summarized"` (기본) | `display: "omitted"` (기본, 빈 thinking field) | 변경 없음, 단 파싱 코드는 빈 필드 허용 |
+
+### 2. Effort 레버 — Opus 4.7의 핵심 지능 조절기
+
+**공식 인용 (best practices)**: *"We expect effort to be more important for this model than for any prior Opus."*
+
+| Effort | 용도 | 권장 맥락 |
+|--------|------|----------|
+| `xhigh` (NEW) | 코딩 에이전트, complex agentic, 장시간 자율 실행 | **Opus 4.7 신규** — 가장 깊은 reasoning |
+| `high` | intelligence-sensitive 작업 (분석, 리서치) | 기본 권장 |
+| `medium` | cost-sensitive, 품질 일부 타협 가능 | 대량 처리 |
+| `low` | 단순 lookup, 저지연 | 저지능 작업 |
+| `max` | 최대 리소스 (vendor-defined) | 특수 케이스 |
+
+**코드 예시 (공식)**:
+```python
+client.messages.create(
+    model="claude-opus-4-7",
+    max_tokens=64000,
+    thinking={"type": "adaptive"},
+    output_config={"effort": "xhigh"},
+    messages=[{"role": "user", "content": "..."}],
+)
+```
+
+### 3. 리터럴 해석 대응 — Explicit Scope 필수
+
+**공식 인용**: *"Claude Opus 4.7 interprets prompts more literally and explicitly than Claude Opus 4.6, particularly at lower effort levels. It will not silently generalize an instruction from one item to another."*
+
+- ❌ "Apply this formatting to the first section" → 첫 섹션에만 적용됨
+- ✅ "Apply this formatting to **every section**, not just the first one."
+
+복잡 추론이 필요하면 낮은 effort에서도 명시적 유도:
+```text
+This task involves multi-step reasoning. Think carefully through the problem before responding.
+```
+
+### 4. XML 구조화 + Long-context 배치 전략
+
+**공식 인용**: *"Queries at the end can improve response quality by up to 30% in tests, especially with complex, multi-document inputs."*
+
+```xml
+<documents>
+  <document index="1">
+    <source>report.pdf</source>
+    <document_content>{{CONTENT}}</document_content>
+  </document>
+</documents>
+
+[여기에 질의/지시 — 문서 아래에 배치]
+```
+
+Few-shot: `<example>` / `<examples>` 태그 (3-5개 권장).
+
+### 5. Parallel Tool Call 명시 유도
+
+Opus 4.7은 4.6보다 tool use를 보수적으로 사용(reasoning 선호). 병렬 호출 필요 시 시스템 프롬프트 필수:
+
+```xml
+<use_parallel_tool_calls>
+If you intend to call multiple tools and there are no dependencies between the tool calls, make all of the independent tool calls in parallel. Prioritize calling tools simultaneously whenever the actions can be done in parallel rather than sequentially. For example, when reading 3 files, run 3 tool calls in parallel to read all 3 files into context at the same time. Maximize use of parallel tool calls where possible to increase speed and efficiency. However, if some tool calls depend on previous calls to inform dependent values like the parameters, do NOT call these tools in parallel and instead call them sequentially. Never use placeholders or guess missing parameters in tool calls.
+</use_parallel_tool_calls>
+```
+
+Tool use 빈도를 더 늘리려면 effort를 `high` 또는 `xhigh`로 상향.
+
+### 6. Thinking 빈도 제어 (Over/Under-thinking)
+
+**줄이기 (latency 민감)**:
+```text
+Thinking adds latency and should only be used when it will meaningfully improve answer quality — typically for problems that require multi-step reasoning. When in doubt, respond directly.
+```
+
+**늘리기 (agentic 품질)**:
+```text
+After receiving tool results, carefully reflect on their quality and determine optimal next steps before proceeding. Use your thinking to plan and iterate based on this new information, and then take the best next action.
+```
+
+### 7. 할루시네이션 방지 — Investigate Before Answer
+
+```xml
+<investigate_before_answering>
+Never speculate about code you have not opened. If the user references a specific file, you MUST read the file before answering. Make sure to investigate and read relevant files BEFORE answering questions about the codebase. Never make any claims about code before investigating unless you are certain of the correct answer — give grounded and hallucination-free answers.
+</investigate_before_answering>
+```
+
+### 8. Prefill 마이그레이션 패턴
+
+| 구 prefill 용도 | 신 대안 |
+|----------------|--------|
+| 포맷 강제 (`{"start": `로 시작) | [Structured Outputs](https://platform.claude.com/docs/en/docs/build-with-claude/structured-outputs) 또는 `output_config.format` |
+| "Here is the summary:\n" preamble 제거 | system: `"Respond directly without preamble. Do not start with phrases like 'Here is...'"` |
+| 거절 우회 | user message 명확화 (4.7은 거절 판정이 크게 개선) |
+| 연속 완성 | user 턴으로 이동: `"Your previous response ended with [text]. Continue."` |
+
+### 9. task_budget (beta) — 에이전트 토큰 예산 인지
+
+`max_tokens`와는 별개로, 에이전트가 전체 루프 예산을 인지해 페이스 조절:
+
+```python
+output_config = {
+    "effort": "xhigh",
+    "task_budget": {"type": "tokens", "total": 128000},  # 최소 20k
+}
+```
+
+**공식 인용**: *"A task budget is not a hard cap; it's a suggestion that the model is aware of."*
+
+장시간 에이전트에서 자동 compaction + 조기 종료 방지:
+```text
+Your context window will be automatically compacted as it approaches its limit, allowing you to continue working indefinitely from where you left off. Therefore, do not stop tasks early due to token budget concerns.
+```
+
+### 10. 이미지 입력 가이드 (4.7 신규)
+
+- 최대 해상도: **2576px / 3.75MP** (4.6 대비 3배)
+- Full-res 이미지 = 최대 4,784 tokens (4.6 ~1,600)
+- cost-sensitive 작업은 downsample 권장
+
+---
+
+## 🚀 GPT-5.5 Outcome-First 핵심 (v2.6.0 — 2026-04-30)
+
+> **공식 가이드**: [GPT-5.5 Prompt Guidance](https://developers.openai.com/api/docs/guides/prompt-guidance?model=gpt-5.5) (2026-04 발표)
+> **핵심**: 5.4의 process-heavy XML 12블록 stack 대신 **outcome-first markdown 6섹션** 권장.
+> **상세 스킬**: `gpt-5.5-prompt-enhancement.md` (블록 정의, 마이그레이션, anti-patterns)
+
+### 사용 가능 경로
+
+| 경로 | 모델 ID | 비고 |
+|------|---------|------|
+| ChatGPT (Plus/Pro/Business/Enterprise) | (자동 라우팅) | 즉시 사용 가능 |
+| Codex CLI | `codex --model gpt-5.5` | Browser Use + Auto-approval Review |
+| API | `gpt-5.5` (2026-04 발표) | `reasoning.effort` + `text.verbosity` + `phase` |
+
+### GPT-5.5 권장 프롬프트 구조 (Markdown)
+
+```markdown
+Role: [1-2 문장. 기능 + 컨텍스트]
+
+# Personality
+[톤·태도. 짧게]
+
+# Goal
+[사용자 산출물 1-2문장]
+
+# Success Criteria
+- [최종 답 전 충족할 조건]
+
+# Constraints
+- [정책·증거·부작용 한계]
+
+# Output
+[형식·길이. plain Markdown 디폴트]
+
+# Stop Rules
+- [도구 루프·재시도·중단 조건]
+- "Can I answer the core request now with useful evidence?" 자가점검
+```
+
+### GPT-5.4 대비 핵심 변화
+
+| 항목 | GPT-5.4 | GPT-5.5 |
+|------|---------|---------|
+| 기본 구조 | XML 12블록 stack | Markdown 6섹션 (outcome-first) |
+| 절차 지시 | step-by-step 명시 | destination + success criteria 우선 |
+| 절대 규칙 | ALWAYS / NEVER 활용 | judgment 영역에선 자제 |
+| Reasoning effort | 기본 medium~high | **low/medium 우선**, 부족할 때만 escalate |
+| Retrieval | 적극 권장 | budget 정의 (빈도 줄임) |
+| Output 형식 | 구조화 디폴트 | plain paragraph 디폴트 |
+
+### Anti-Patterns (GPT-5.5에서 회피)
+
+- ❌ GPT-5.4 XML stack을 그대로 GPT-5.5에 이전
+- ❌ judgment 영역에 ALWAYS / NEVER 절대 규칙 사용
+- ❌ outcome 명확한데 step sequence 강요
+- ❌ 탐색 전 multi-step plan 강제
+- ❌ retrieval로 wording 다듬기
+- ❌ 구조화 포맷 디폴트 (plain text가 더 명확할 때 많음)
+- ❌ Codex CLI에 preamble 요구 (조기 종료 유발)
+
+### Codex CLI 전용 팁 (`--model gpt-5.5`)
+
+1. **Outcome-first** + 짧은 success criteria — `EXACTLY and ONLY` 같은 절대 명령은 정말 필요할 때만
+2. **Browser Use 시 명시**: "Use the browser tool to click X, verify Y visually, then continue."
+3. **Auto-approval**: 승인 프롬프트가 예상되는 위험 작업은 **명시적 승인 게이트** 문구 포함
+
+### 모델 라우팅 규칙 (이 스킬 내부)
+
+| 사용자 명시 | 적용 enhancement |
+|------------|-----------------|
+| `GPT-5.5` 또는 `gpt-5.5` | `gpt-5.5-prompt-enhancement.md` (outcome-first 6섹션) |
+| `GPT-5.4` / `GPT-5.2` / `GPT-5` | `gpt-5.5-prompt-enhancement.md` 하단 "Legacy GPT-5.2/5.4 XML Stack" 섹션 |
+| `legacy XML` / `5.4 스타일` 명시 | `gpt-5.5-prompt-enhancement.md` 하단 Legacy 섹션 강제 |
+| GPT 모델 미지정, 일반 작업 | GPT-5.5 outcome-first 디폴트 |
+
+> **Note**: 2026-04-30 v2.7.0부터 `gpt-5.4-prompt-enhancement.md` 별도 파일은 **폐기**되고 `gpt-5.5-prompt-enhancement.md` 단일 파일에 outcome-first + legacy XML stack 모두 통합됨 (GPTs/Gems 첨부파일 10개 한도 대응).
+
+> **호환성**: 사용자가 "5.4 XML 스타일"을 GPT-5.5 모델에 적용해달라고 명시 요청하면 그대로 따름.
+
+---
+
 ## 워크플로우
 
 ### Step 1: 목적 감지 + 옵션 선택 (AskUserQuestion 활용)
@@ -139,18 +526,20 @@ $ARGUMENTS
 
 **목적 자동 감지 테이블:**
 
-| 키워드/패턴 | 자동 선택 목적 | 권장 출력 형식 |
-|------------|---------------|---------------|
-| 이미지, 그림, 사진, 그려줘 | 이미지생성 | **JSON 구조 기본** |
-| 영상, 동영상, 비디오, 클립 | 동영상생성 | **JSON 구조 기본** |
-| 코드, 코딩, 개발, 프로그램 | 코딩/개발 | XML |
-| 글, 작성, 블로그, 기사 | 글쓰기/창작 | Markdown + 자연어 |
-| 분석, 데이터, 통계, 비교 | 분석/리서치 | XML |
-| 에이전트, 자동화, 워크플로우 | 에이전트 | XML |
-| 팩트체크, 사실 확인, 검증 | 팩트체크 | XML |
-| 조사, 리서치, 찾아줘 | 리서치/조사 | XML |
-| 수학, 계산, 풀이, 증명 | 수학/논리 | Markdown + 자연어 |
-| 슬라이드, PPT, 발표, 프레젠테이션 | 슬라이드생성 | Markdown + JSON |
+| 키워드/패턴 | 자동 선택 목적 | 권장 출력 형식 | 필수 베이스 스킬 |
+|------------|---------------|---------------|----------------|
+| 이미지, 그림, 사진, 그려줘 | 이미지생성 | **JSON 구조 기본** | `image-prompt-guide.md` |
+| 영상, 동영상, 비디오, 클립 | 동영상생성 | **JSON 구조 기본** | `image-prompt-guide.md` |
+| 코드, 코딩, 개발, 프로그램 | 코딩/개발 | XML | 모델별 전략 가이드 |
+| 글, 작성, 블로그, 기사 | 글쓰기/창작 | Markdown + 자연어 | 모델별 전략 가이드 |
+| 분석, 데이터, 통계, 비교 | 분석/리서치 | XML | **`research-prompt-guide.md` 필수 로드** |
+| 에이전트, 자동화, 워크플로우 | 에이전트 | XML | 모델별 전략 가이드 |
+| 팩트체크, 사실 확인, 검증, 교차검증, Chain-of-Verification | 팩트체크 | XML | **`research-prompt-guide.md` 필수 로드** |
+| 조사, 리서치, 찾아줘, market research, 시장 조사, 경쟁사, 학술 | 리서치/조사 | XML | **`research-prompt-guide.md` 필수 로드** |
+| 수학, 계산, 풀이, 증명 | 수학/논리 | Markdown + 자연어 | 모델별 전략 가이드 |
+| 슬라이드, PPT, 발표, 프레젠테이션 | 슬라이드생성 | Markdown + JSON | `slide-prompt-guide.md` |
+
+> ⚠️ **CRITICAL**: 팩트체크 / 리서치 / 분석 목적이 감지되면 `research-prompt-guide.md`(SKILL.md + 01-factcheck-prompts.md + 02-general-research.md) Read 로드 후 IFCN 기반 베이스 템플릿을 사용해야 합니다. 일반 XML로 생성 금지. 상세 절차는 Step 2 「리서치/팩트체크 템플릿 자동 로드」 참조.
 
 ---
 
@@ -160,11 +549,22 @@ $ARGUMENTS
 
 목적이 감지되면, 해당 목적에 맞는 옵션을 `AskUserQuestion` 도구로 질문합니다.
 
-#### 🖼️ 이미지 생성 시 질문 (4가지)
+#### 🖼️ 이미지 생성 시 질문 (5가지)
 
 ```
-AskUserQuestion 호출 (questions 배열에 4개 질문):
+AskUserQuestion 호출 (questions 배열에 5개 질문 — 용도를 맨 앞에):
 [
+  {
+    "question": "이미지의 용도/매체를 선택해주세요",
+    "header": "용도",
+    "multiSelect": false,
+    "options": [
+      {"label": "SNS/일반 (Recommended)", "description": "프로필, 피드, 일반 이미지 — 기본 JSON 구조"},
+      {"label": "광고/상품", "description": "메타 광고, 상세페이지, 배너 — 5-stage Framework 적용"},
+      {"label": "프레젠테이션", "description": "발표 자료, 슬라이드 삽입"},
+      {"label": "콘텐츠/블로그", "description": "블로그, 뉴스레터 삽입"}
+    ]
+  },
   {
     "question": "이미지 스타일을 선택해주세요",
     "header": "스타일",
@@ -294,9 +694,10 @@ AskUserQuestion 호출 (questions 배열에 4개 질문):
     "header": "AI 모델",
     "multiSelect": false,
     "options": [
-      {"label": "Claude Opus 4.6 (Recommended)", "description": "코딩 1위, Adaptive Thinking, 128K output"},
-      {"label": "GPT-5.2", "description": "수학/논리 강점"},
-      {"label": "Gemini 3 Pro", "description": "멀티모달 강점"}
+      {"label": "Claude Opus 4.7 (Recommended)", "description": "코딩 1위 (2026-04-16), Adaptive Thinking + effort=xhigh, 1M context, 128K output"},
+      {"label": "GPT-5.5 (Codex/ChatGPT)", "description": "2026-04-23 출시, Browser Use + Auto-approval, API 미공개"},
+      {"label": "GPT-5.4", "description": "API 사용 가능 최고 — reasoning.effort + verbosity + Phase"},
+      {"label": "Gemini 3 Pro", "description": "멀티모달 + Grounding Search 강점"}
     ]
   },
   {
@@ -843,12 +1244,32 @@ Style Rules:
 
 #### ✍️ 글쓰기/리서치: 개요 생성
 
-**트리거**: 목적 = 글쓰기/창작 OR 분석/리서치
+**트리거**: 목적 = 글쓰기/창작 OR 분석/리서치 OR 팩트체크
 
-**자동 수행:**
+> 🔴 **CRITICAL**: 분석/리서치/팩트체크 목적이면 일반 개요로 생성하지 말고 **`research-prompt-guide.md`의 IFCN 기반 워크플로우**를 베이스로 사용하세요.
+>
+> | 목적 세부 | 베이스 워크플로우 | 출처 파일 |
+> |----------|----------------|----------|
+> | 종합 리서치 / 일반 조사 | `StructuredResearch_v1.0` 4-stage (ScopeDefinition → DataCollection → Analysis → Synthesis) | `research-prompt-guide/02-general-research.md` |
+> | 시장 조사 | `MarketResearchPrompt` (시장 개요 → 경쟁 → 고객 → 기회/위협) | `02-general-research.md` |
+> | 경쟁사 분석 | `CompetitiveAnalysisPrompt` (제품 → 시장 위치 → 전략 → 역량) | `02-general-research.md` |
+> | 학술/기술 리서치 | `AcademicResearchPrompt` (문헌 검토 → 방법론 → 핵심 발견) | `02-general-research.md` |
+> | 팩트체크 (단계별/대화형) | `LoopFactChecker_UI_v1.2` 4-stage (Baseline → Evidence → CounterClaims → Synthesis) | `01-factcheck-prompts.md` |
+> | 팩트체크 (빠른 검증 / Chain-of-Verification) | `QuickFactCheck` | `01-factcheck-prompts.md` |
+>
+> 모든 리서치/팩트체크 워크플로우는 IFCN 5대 원칙(초당파성·정보투명성·재원투명성·방법론투명성·정직한수정) + 최신성 정책(오늘 → 전날 → 1주일 → 1개월) + 국가/지역 소스 우선 원칙을 포함해야 합니다.
+
+**자동 수행 (글쓰기/창작):**
 1. 사용자 요청을 분석하여 개요(아웃라인) 생성
 2. 논리적 구조로 섹션 구성
 3. 각 섹션별: 목표, 핵심 포인트 정의
+
+**자동 수행 (분석/리서치/팩트체크):**
+1. Read 도구로 `research-prompt-guide/SKILL.md` + 매칭되는 서브파일 로드
+2. 매칭 베이스 템플릿(위 표) 채택
+3. 사용자 주제/지시문을 `<Topic>` / `<Source>` / `<Target>` 등 placeholder에 주입
+4. IFCN 원칙 + 최신성 정책 블록 보존
+5. Step 2에서 모델별 최적화 블록 + CE 체크리스트 적용
 
 **개요 출력 형식:**
 
@@ -904,12 +1325,83 @@ Style Rules:
 
 **모델별 필수 블록**
 
-| 모델 | 필수 블록 |
-|------|----------|
-| GPT-5.2/5.4 | `<output_verbosity_spec>`, `<output_contract>` |
-| Claude Opus 4.6 | `<default_to_action>` (Adaptive Thinking 자동) |
+| 모델 | 필수 블록 / 구조 |
+|------|-----------------|
+| **GPT-5.5** (공식 outcome-first) | Markdown 6섹션: `Role` / `# Personality` / `# Goal` / `# Success Criteria` / `# Constraints` / `# Output` / `# Stop Rules`. 도구 워크플로면 Preamble 1줄 추가. **상세**: `gpt-5.5-prompt-enhancement.md` |
+| GPT-5.2/5.4 (legacy XML) | `<output_verbosity_spec>`, `<output_contract>`, `<completeness_contract>`, `<tool_persistence>`. **상세**: `gpt-5.5-prompt-enhancement.md` 하단 Legacy 섹션 |
+| Claude Opus 4.7 | `<use_parallel_tool_calls>`, `<investigate_before_answering>`, `<default_to_action>`, `<explicit_scope>` (리터럴 해석 대응), `thinking: {type: "adaptive"}` + `output_config: {effort: "xhigh"}` |
+| Claude Opus 4.6 (레거시) | `<default_to_action>` (Adaptive Thinking 자동) |
 | Gemini 3 | Constraints 최상단 |
 | 이미지/동영상 | 주제/스타일/분위기 |
+
+> **GPT 모델 라우팅**: 사용자가 `GPT-5.5` 명시 또는 일반 GPT 작업이면 outcome-first(5.5) 디폴트. `GPT-5.4 / 5.2 / legacy XML` 명시 시에만 XML stack 적용.
+
+**📚 리서치/팩트체크 템플릿 자동 로드 (CRITICAL — /deep-research 통합 핵심)**
+
+> 목적이 `팩트체크`, `리서치/조사`, `분석/리서치`로 감지되면 **반드시 다음 절차**를 따릅니다.
+> 일반 XML 프롬프트로 대체 생성 금지. 누락 시 `/deep-research` 워커 품질이 격하됩니다.
+
+**Step 2-A: 서브파일 로드** (프로젝트 루트 기준 상대 경로 — 모든 머신 호환)
+1. `Read(".claude/skills/research-prompt-guide/SKILL.md")` — 전체 인덱스
+2. 매칭 서브파일 로드:
+   - 팩트체크 → `Read(".claude/skills/research-prompt-guide/01-factcheck-prompts.md")`
+   - 리서치 → `Read(".claude/skills/research-prompt-guide/02-general-research.md")`
+3. (옵션) 모델별 시스템 프롬프트가 필요하면 `Read(".claude/skills/research-prompt-guide/03-model-optimization.md")` 로드
+4. (옵션) 출력 형식 강화가 필요하면 `Read(".claude/skills/research-prompt-guide/04-quality-and-output.md")` 로드
+
+> 💡 **경로 해석**: Claude Code는 프로젝트 루트(`.claude/` 부모)를 working directory로 사용합니다. `.claude/skills/...` 상대 경로는 모든 환경(WSL/Mac/installer)에서 동작합니다. 절대 경로 하드코딩 금지.
+
+**Step 2-B: 베이스 템플릿 선택**
+
+| 지시문 패턴 | 선택할 베이스 템플릿 |
+|------------|-------------------|
+| "팩트체크", "사실 확인", "검증해줘", "단계별로 검증" | `<FactCheckPrompt name="LoopFactChecker_UI_v1.2">` (4-stage IFCN) |
+| "빠른 팩트체크", "Chain-of-Verification", "핵심 주장 검증" | `<QuickFactCheck>` |
+| "종합 리서치", "조사해줘", "찾아줘", "리서치 보고서" | `<ResearchPrompt name="StructuredResearch_v1.0">` |
+| "시장 조사", "market research", "시장 규모", "시장 트렌드" | `<MarketResearchPrompt>` |
+| "경쟁사 분석", "경쟁 분석", "competitor analysis" | `<CompetitiveAnalysisPrompt>` |
+| "학술", "논문", "academic research", "기술 리서치" | `<AcademicResearchPrompt>` |
+| "교차검증", "소스 모순", "독립 소스 확인" | `<FactCheckPrompt name="LoopFactChecker_UI_v1.2">` Stage 3 (CounterClaimsSearch) 강조 |
+
+**Step 2-C: 베이스 템플릿 커스터마이징**
+1. 베이스 XML 템플릿을 그대로 복사
+2. Placeholder 치환:
+   - `<Topic>[리서치 주제]</Topic>` → 사용자 지시문/주제
+   - `<Source>[검증할 URL/문서/텍스트]</Source>` → 사용자가 제공한 검증 대상
+   - `<Target>[조사 대상]</Target>` → 사용자 지시문
+3. **IFCN 5대 원칙 + RecencyPolicy + CountrySourcePolicy 블록은 절대 삭제 금지**
+4. 모델별 최적화 블록을 베이스 템플릿 안에 병합:
+   ```xml
+   <ResearchPrompt name="StructuredResearch_v1.0">
+     <ModelOptimization model="Claude">
+       <default_to_action>...</default_to_action>
+       <use_parallel_tool_calls>...</use_parallel_tool_calls>
+     </ModelOptimization>
+     <!-- 또는 -->
+     <ModelOptimization model="GPT-5.2">
+       <output_verbosity_spec>...</output_verbosity_spec>
+       <web_search_rules>...</web_search_rules>
+       <uncertainty_and_ambiguity>...</uncertainty_and_ambiguity>
+     </ModelOptimization>
+     <!-- ... 베이스 템플릿의 나머지 ... -->
+   </ResearchPrompt>
+   ```
+5. CE 체크리스트(U자형 배치, Lost-in-Middle 방지) 적용
+
+**Step 2-D: 검증 (필수)**
+출력 직전 다음을 확인:
+- [ ] 베이스 템플릿(LoopFactChecker / StructuredResearch / 등)이 XML 루트에 존재
+- [ ] IFCN 5대 원칙 블록 포함
+- [ ] RecencyPolicy(오늘 → 전날 → 1주일 → 1개월) 포함
+- [ ] 사용자 주제/지시문이 placeholder에 정확히 주입됨
+- [ ] 모델별 최적화 블록(Claude/GPT/Gemini) 병합됨
+- [ ] 출력 형식(인라인 인용, 신뢰도 등급, References) 명시됨
+
+**금지 사항:**
+- ❌ `research-prompt-guide.md`를 로드하지 않고 일반 `<ResearchPrompt>` 직접 작성
+- ❌ IFCN 원칙·RecencyPolicy·CountrySourcePolicy 블록 누락
+- ❌ 베이스 템플릿의 4-stage Workflow를 임의로 압축/생략
+- ❌ 인라인 인용 / References 섹션 누락
 
 **🖼️ 이미지/동영상 프롬프트 출력 형식 (CRITICAL)**
 
@@ -936,7 +1428,7 @@ Style Rules:
 
 | 역할 | 검토 초점 |
 |------|----------|
-| Expert 1 | CE 원칙, 토큰 효율 |
+| Expert 1 | CE 원칙, 토큰 효율, **이미지 시 토큰 순서 검증** (구체 명사 앞 배치? 추상어 시각 재기술?) |
 | Expert 2 | 해당 도메인 실존 전문가 관점으로 내용 정확성, 전문 용어 검증 |
 | Expert 3 | 최종 결정, 조율 |
 
@@ -1112,16 +1604,40 @@ AI: 최종 프롬프트 출력 + 5가지 선택지 (Step 3으로 복귀)
 
 ## 이미지 프롬프트 JSON 구조 (기본 형식)
 
-**단일 이미지:**
+> **토큰 순서 = JSON 필드 순서 = 어텐션 가중치 순서.**
+> Cross-Attention 이론상 앞쪽 필드가 더 강한 가중치를 받으므로, 핵심(목적/피사체)을 앞에, 제약/분위기를 뒤에 배치합니다.
+> Ref: @specal1849 이미지 프롬프트 이론 (Prompt-to-Prompt, Cross-Attention Control)
+
+**단일 이미지 — 기본 (SNS/일반):**
 ```json
 {
-  "subject": "주제 - 핵심 피사체 설명",
+  "subject": "주제 - 핵심 피사체 (구체 명사 + 시각적 속성을 앞에)",
   "style": "스타일 - 사진풍/일러스트/3D/수채화 등",
-  "mood": "분위기 - 색조, 감정, 톤",
+  "mood": "분위기 - 추상어 금지, 시각적으로 재기술 (Visual Re-description)",
   "composition": "구도 - 앵글, 프레이밍",
   "lighting": "조명 - 자연광/스튜디오/골든아워 등",
   "details": "세부사항 - 추가 디테일 (자연어로 유연하게)",
   "aspect_ratio": "16:9"
+}
+```
+
+**단일 이미지 — 광고/상품용 (5-stage Framework):**
+
+> 사용자가 "광고/상품" 용도를 선택했을 때 이 구조를 사용합니다.
+> 필드 순서가 Cross-Attention 레이어별 처리 순서와 일치합니다.
+
+```json
+{
+  "purpose": "Stage 1 — 비즈니스 목적 + 매체/포맷 (메타 광고 4:5, 상세페이지 히어로 등)",
+  "hero": "Stage 2 — 주 피사체 (구체 명사 + 시각적 속성. '프리미엄 무선 헤어스타일러' 처럼 수식어가 톤 제어)",
+  "context": "Stage 3 — 사용자 맥락 / 문제 상황 (타깃의 실제 사용 장면)",
+  "evidence": "Stage 4 — 시각적 증거 (전후 대비, 제형, 재질, UI 상태, 사용 흔적)",
+  "style": "스타일",
+  "mood": "분위기 (추상→시각 재기술: '빠른 진정' → '붉고 거친 피부 vs 촉촉하고 편안해진 피부')",
+  "lighting": "조명",
+  "composition": "구도",
+  "constraints": "Stage 5 — 디자인 제약 (여백, 배지 영역, CTA 영역, 금지 요소, 모바일 가독성)",
+  "aspect_ratio": "4:5"
 }
 ```
 
@@ -1200,11 +1716,11 @@ AI: 최종 프롬프트 출력 + 5가지 선택지 (Step 3으로 복귀)
 |---|--------|------|----------|
 | 1 | `prompt-engineering-guide.md` | 모델별 프롬프트 전략 총괄 | ✅ 필수 |
 | 2 | `context-engineering-collection.md` | CE 원칙 | ✅ 권장 |
-| 3 | `gpt-5.4-prompt-enhancement.md` | GPT-5.2 전용 XML 패턴 | GPT 시 |
-| 4 | `claude-4.6-prompt-strategies.md` | Claude 4.5/4.6 프롬프트 전략 | Claude 시 |
+| 3 | `gpt-5.5-prompt-enhancement.md` | GPT 5.x 통합 (outcome-first + legacy XML) | GPT 시 |
+| 4 | `claude-4.7-prompt-strategies.md` | Claude 4.x 프롬프트 전략 (Opus 4.5/4.6/4.7 + Sonnet 4.5/4.6 + Haiku 4.5) (Opus 4.7: adaptive thinking + effort=xhigh, budget_tokens 제거, prefill 금지, literal instruction following, task_budget) | Claude 시 |
 | 5 | `gemini-3.1-prompt-strategies.md` | Gemini 3, Flash, Veo, Nano Banana 전략 | Gemini 시 |
 | 6 | `image-prompt-guide.md` | 이미지/동영상 생성 가이드 (공냥이 @specal1849) | 이미지/동영상 시 |
-| 7 | `research-prompt-guide.md` | 리서치/팩트체크 가이드 (두부 @tofukyung) | 팩트체크/리서치 시 |
+| 7 | `research-prompt-guide.md` (SKILL.md + 01-factcheck-prompts.md + 02-general-research.md) | 리서치/팩트체크 베이스 템플릿 — IFCN 5대 원칙 + LoopFactChecker / QuickFactCheck / StructuredResearch_v1.0 / MarketResearch / CompetitiveAnalysis / AcademicResearch (두부 @tofukyung) | 팩트체크/리서치/분석 시 ✅ **필수 로드** |
 | 8 | `expert-domain-priming.md` | 전문가 도메인 프라이밍 DB (12도메인, 60+명) | 전문가 활용 시 ✅ |
 | 9 | `slide-prompt-guide.md` | 슬라이드/PPT 프롬프트 가이드 (baoyu 패턴 통합) | 슬라이드 시 ✅ |
 
@@ -1257,7 +1773,7 @@ AI: 최종 프롬프트 출력 + 5가지 선택지 (Step 3으로 복귀)
 → $ARGUMENTS 분석 후 즉시 프롬프트 생성 + 개선 옵션 제시
 
 /prompt Claude로 블로그 글 작성용 프롬프트 만들어줘
-→ Claude Opus 4.6 + 글쓰기 목적으로 즉시 생성 + 개선 옵션 제시
+→ Claude Opus 4.7 + 글쓰기 목적으로 즉시 생성 + 개선 옵션 제시
 
 /prompt 코딩용 프롬프트 만들어줘
 → LMArena 순위 기반 최적 모델로 즉시 생성 + 개선 옵션 제시
@@ -1267,8 +1783,45 @@ AI: 최종 프롬프트 출력 + 5가지 선택지 (Step 3으로 복귀)
 
 ## Metadata
 
-- **Version**: 2.1.0
-- **Updated**: 2026-03-08
+- **Version**: 2.6.0
+- **Updated**: 2026-04-30
+- **Changes v2.6.0** (2026-04-30):
+  - **[MAJOR] GPT-5.5 공식 outcome-first 가이드 반영**: [GPT-5.5 Prompt Guidance](https://developers.openai.com/api/docs/guides/prompt-guidance?model=gpt-5.5) 2026-04 발표. XML 12블록 stack → Markdown 6섹션 (Role / Personality / Goal / Success Criteria / Constraints / Output / Stop Rules) 전환
+  - **[MAJOR] gpt-5.5-prompt-enhancement.md 신규 스킬 추가** (v1.0.0): 6개 핵심 블록 정의(outcome_first_structure, personality_and_collaboration, constraints_block, output_contract, stop_rules, validation_rules) + Migration 매핑 + Anti-patterns
+  - **[MAJOR] 모델 라우팅 추가**: 사용자 명시(GPT-5.5 / GPT-5.4 / legacy XML) 또는 일반 GPT 작업 시 자동 분기. 5.5 디폴트 + 5.4는 명시 시 fallback
+  - **[MEDIUM] gpt-5.4-prompt-enhancement.md → v1.1.1 (legacy 명시)**: 제목·헤더에 "Legacy XML Stack" 추가, GPT-5.5 분리 안내
+  - **[MEDIUM] 모델별 필수 블록 테이블 재구성**: GPT-5.5 outcome-first 6섹션 / GPT-5.2-5.4 legacy XML stack 분리
+  - **[MEDIUM] GPT-5.5 현황 섹션 전면 갱신** (v2.5.0의 "API 미공개" → 공식 가이드 발표 반영)
+  - **[LOW] Anti-Patterns 추가**: judgment 영역 ALWAYS/NEVER 회피, step sequence 강요 회피, retrieval 남용 회피, plain paragraph 디폴트
+- **Changes v2.5.0** (2026-04-24):
+  - **[MAJOR] Claude Opus 4.7 공식 프롬프팅 가이드 반영**: [platform.claude.com](https://platform.claude.com/docs/en/docs/build-with-claude/prompt-engineering/claude-4-best-practices) + [Adaptive thinking](https://platform.claude.com/docs/en/docs/build-with-claude/adaptive-thinking) + [Migrating to Claude 4](https://platform.claude.com/docs/en/docs/about-claude/models/migrating-to-claude-4) 3종 공식 문서 기반. 10개 핵심 원칙 블록 신설(Breaking Changes, Effort 레버, Literal Interpretation, XML 구조화, Parallel Tool Call, Thinking Steering, Investigate Before Answer, Prefill 마이그레이션, task_budget beta, 이미지 입력)
+  - **[MAJOR] 모델 순위 전면 업데이트**: Claude Opus 4.6 → **Claude Opus 4.7** (2026-04-16 공식 출시). 코딩/Hard Prompts 1순위 유지. "에이전틱 (1M context)" 신규 행 추가 (Opus 4.7 adaptive thinking + task_budget vs GPT-5.5 Codex Browser Use)
+  - **[MAJOR] Opus 4.7 Breaking Changes 경고**: `budget_tokens` 제거 → `adaptive` 전용, `temperature/top_p/top_k` 400 에러, prefill 400 에러. 구 프롬프트 호환성 브레이킹 포인트 명시
+  - **[MEDIUM] GPT-5.5 (2026-04-23) 표기**: ChatGPT/Codex 전용, API 미공개. Browser Use + Auto-approval Review + 40% 토큰 효율. 공식 프롬프팅 가이드 미발표 → GPT-5.4 가이드 계승
+  - **[MEDIUM] Step 1.5 AskUserQuestion 모델 옵션 확장**: 3개 → 4개 (Opus 4.7 / GPT-5.5 Codex / GPT-5.4 / Gemini 3 Pro). 각 모델 사용 경로 명시
+  - **[MEDIUM] 모델별 필수 블록 테이블 재구성**: Opus 4.7용 `<use_parallel_tool_calls>`, `<investigate_before_answering>`, `<explicit_scope>` 명시 + `thinking: adaptive` + `effort=xhigh` 기본값
+  - **[MEDIUM] Batch 모드 GPT-5.5 토큰 추가**: `GPT-5.5`를 1번째 토큰으로 허용 (GPT-5.4 파라미터 계승)
+  - **[LOW] claude-4.7-prompt-strategies.md 설명 확장**: 4.5/4.6/4.7 통합 전략으로 표기 (파일명 유지, 내용 별도 업데이트 예정)
+- **Changes v2.4.0** (2026-04-24):
+  - **[MAJOR] gpt-image-2 핵심 원칙 블록 신설**: OpenAI 공식 쿡북 + EvoLinkAI 커뮤니티 200+ 케이스 분석 반영. "배경→주체→디테일→제약" 4단계 프레임워크 + 10개 원칙(생성/편집 분리, Visual Re-description, 제약 명시, 텍스트 처리, 해상도 검증, 품질 레버, 포토리얼 키워드, 반복 개선, 네거티브 스택) 추가
+  - **[MEDIUM] 모델 순위 업데이트**: 이미지 생성 1순위 "gpt-image (GPT Image 1.5)" → **"gpt-image-2"** (OpenAI 2026-04 출시), 편집 컬럼에 "identity/geometry/layout 보존 강점" 명시
+  - **[MEDIUM] 이미지 프롬프트 소스 확장**: v2.3.0의 specal1849 이론 노트에 더해 [[OpenAI-gpt-image-2-Prompting-Guide-2026-04]](공식) + [[EvoLinkAI-awesome-gpt-image-2-prompts-2026-04]](커뮤니티) 두 가이드 참조 추가
+  - **[LOW] 해상도 자동 검증**: 16 배수·3:1 비율·픽셀 범위 체크 규칙 명시. `--ar` 플래그 자동 변환
+  - **[LOW] 품질 자동 상향**: 텍스트 포함/밀집 인포그래픽/클로즈업 시 `quality="medium"` 이상 자동 선택
+- **Changes v2.3.0** (2026-04-16):
+  - **[MAJOR] 이미지 5-stage Framework 도입**: @specal1849 이미지 프롬프트 이론 기반. 광고/상품용 JSON 구조에 purpose→hero→context→evidence→constraints 5단계 적용. Cross-Attention 레이어별 처리 순서와 일치
+  - **[MAJOR] Visual Re-description 규칙 추가**: 추상적 감성어를 구체적 시각 대비로 변환하는 규칙. mood/details 필드에 추상어 자동 재기술 적용
+  - **[MEDIUM] 이미지 AskUserQuestion "용도/매체" 질문 추가**: 4가지→5가지. "광고/상품" 선택 시 5-stage Framework 활성화, 기존 "SNS/일반"은 하위 호환
+  - **[MEDIUM] image-prompt-guide.md v1.7.0**: Cross-Attention 이론, 수식어 전략, 5-stage 프레임워크, 참고 문헌 5편 추가
+  - **[LOW] Expert 1 토큰 순서 검증 추가**: 이미지 프롬프트 시 구체 명사 앞 배치, 추상어 시각 재기술 여부 검증
+- **Changes v2.2.0** (2026-04-11):
+  - **[CRITICAL FIX] /deep-research 통합 완성**: 2026-04-06에 /deep-research v2.1.0이 `Skill("prompt", "--batch ...")` 호출로 변경되었으나, /prompt 측에 `--batch` 모드 핸들러와 research-prompt-guide.md 로드 로직이 누락되어 워커가 IFCN 기반 템플릿 대신 일반 XML을 생성하던 문제 해결
+  - **[MAJOR] BATCH 모드 신설**: `--batch {모델} {상세도} {지시문}` 패턴으로 호출 시 인터랙티브 흐름(AskUserQuestion, 5가지 옵션, Step 3-5) 전체 우회 → 프롬프트 코드블록만 출력 → 응답 종료. /deep-research, /tofu-at, /tofu-at-codex 등 워커 호출 컨텍스트 전용
+  - **[MAJOR] research-prompt-guide.md 자동 로드 의무화**: 목적이 `팩트체크` / `리서치/조사` / `분석/리서치`로 감지되면 Step 2에서 `research-prompt-guide/SKILL.md` + `01-factcheck-prompts.md` + `02-general-research.md`를 Read로 로드하여 IFCN 기반 베이스 템플릿(LoopFactChecker_UI_v1.2 / QuickFactCheck / StructuredResearch_v1.0 / MarketResearchPrompt / CompetitiveAnalysisPrompt / AcademicResearchPrompt) 채택 후 사용자 주제로 placeholder 치환하는 절차 필수화
+  - **Step 1 목적 감지 테이블 확장**: "필수 베이스 스킬" 컬럼 추가, 리서치/팩트체크 키워드 확장(market research, 시장 조사, 경쟁사, 학술, Chain-of-Verification, 교차검증)
+  - **Step 1.7 글쓰기/리서치 개요 생성 강화**: 분석/리서치/팩트체크 시 일반 개요 대신 research-prompt-guide.md의 4-stage 워크플로우를 베이스로 사용하도록 명시
+  - **Step 2 「리서치/팩트체크 템플릿 자동 로드」 신설**: Step 2-A(서브파일 로드) → Step 2-B(베이스 템플릿 선택) → Step 2-C(커스터마이징) → Step 2-D(검증) 4단계 절차 추가, IFCN 5대 원칙·RecencyPolicy·CountrySourcePolicy 보존 의무화
+  - **참조 스킬 테이블 #7 재정의**: research-prompt-guide.md를 "팩트체크/리서치/분석 시 ✅ 필수 로드"로 격상, 6개 베이스 템플릿 명시
 - **Changes v2.1.0**:
   - **[HIGH] 이미지 생성 모델 순위 업데이트**: NB2 (Gemini 3.1 Flash Image) 2위 추가
   - **[MEDIUM] 참조 스킬 테이블 업데이트**: Claude 4.5/4.6 설명 반영
@@ -1345,3 +1898,10 @@ AI: 최종 프롬프트 출력 + 5가지 선택지 (Step 3으로 복귀)
   - **자동/필수 입력 분리**: 목적별 필수 입력 필드 구분
 - **Changes v3.0.0**:
   - **[MAJOR] 전문가 3인 토론 필수화**: 모든 프롬프트 생성에 자동 적용
+
+---
+
+## Auto-Learned Patterns
+
+- [2026-04-11] v2.2.0에서 `--batch` 모드 추가 — 프로그래밍 호출(deep-research/tofu-at 워커)에서 AskUserQuestion·5가지 옵션·메타텍스트 전부 우회, 프롬프트 코드블록 1개만 출력. 이전 버전은 워커가 "1번 선택"을 기다리며 멈추는 버그 있었음 (source: 2026-04-11-2307)
+- [2026-04-11] 배치 호출 시 리서치/팩트체크 지시문에 research-prompt-guide.md 미로드가 가장 자주 발생하는 오류 — "리서치" 키워드가 지시문에 있으면 research-prompt-guide.md 서브파일 Read 로드 필수. 누락 시 IFCN 베이스 템플릿 대신 일반 XML로 격하됨 (source: 2026-04-11-2335)

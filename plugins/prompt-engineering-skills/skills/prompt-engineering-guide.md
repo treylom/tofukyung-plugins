@@ -5,7 +5,7 @@ references:
   - context-engineering-collection
   - ce-context-fundamentals
   - ce-context-optimization
-  - gpt-5.4-prompt-enhancement
+  - gpt-5.5-prompt-enhancement
 ---
 
 # AI 프롬프트 엔지니어링 가이드
@@ -70,8 +70,8 @@ GPT-5.2에서 자주 사용하는 XML 태그들:
 | `<tool_persistence>` | 도구 실패 시 재시도 규칙 | GPT-5.4 에이전트 |
 | `<eagerness_control>` | 탐색 적극성 양방향 제어 | GPT-5.4 에이전트 |
 
-> **Claude 4.5/4.6 XML 구조 상세**: `claude-4.6-prompt-strategies.md` 스킬의 Part 12 참조
-> **GPT-5.4 에이전틱 패턴 상세**: `gpt-5.4-prompt-enhancement.md` 스킬 참조
+> **Claude 4.5/4.6 XML 구조 상세**: `claude-4.7-prompt-strategies.md` 스킬의 Part 12 참조
+> **GPT-5.4 에이전틱 패턴 상세**: `gpt-5.5-prompt-enhancement.md` 하단 "Legacy GPT-5.2/5.4 XML Stack" 섹션 참조
 
 ---
 
@@ -530,6 +530,99 @@ Fonts: San Serif, Inter, Geist, Mona Sans, IBM Plex Sans, Manrope
 - 테스트 가능한 코드 작성
 - 에러 처리는 필요한 경우에만
 - **과도한 프롬프팅 피하기** - 모델이 이미 학습함
+
+---
+
+### GPT-5.5 (Outcome-First Markdown — 2026-04 공식)
+
+GPT-5.5는 **outcome-first markdown 6섹션** 구조를 권장합니다. GPT-5.4의 process-heavy XML 12블록 stack과 다른 패턴이며, 모델이 이미 효율적인 추론·도구 사용·검증을 내장하고 있어 짧은 destination + success criteria 만으로 충분합니다.
+
+> **공식 출처**: [Prompt guidance for GPT-5.5](https://developers.openai.com/api/docs/guides/prompt-guidance?model=gpt-5.5) (2026-04)
+> **상세 패치 스킬**: `gpt-5.5-prompt-enhancement.md` (v1.0.0)
+
+#### 핵심 행동 차이점 (vs GPT-5.4)
+
+| 특성 | 설명 |
+|------|------|
+| **Outcome-first 우선** | step-by-step 절차보다 destination + success criteria로 정의 |
+| **낮은 reasoning effort 충분** | 5.4 대비 1단계 낮춰 시작, 부족하면 escalate |
+| **Personality/Collaboration 분리** | 톤(짧고 압축) + 협업 스타일(질문 빈도, 적극성) 별도 정의 |
+| **Retrieval Budget** | 1회 broad search 후, 사실 누락 시에만 재검색 |
+| **Plain text 디폴트** | 헤더/불릿은 가독성 향상시만, 구조화 자동 적용 X |
+| **Phase 보존** | Responses API 멀티턴에서 commentary/final_answer 분리 |
+
+#### 권장 구조 (Markdown 6섹션)
+
+```markdown
+Role:
+[1-2 문장. 기능 + 컨텍스트]
+
+# Personality
+[톤·태도. 짧게]
+
+# Goal
+[사용자 산출물 1-2문장]
+
+# Success Criteria
+- [최종 답 전 충족할 조건]
+
+# Constraints
+- [정책·증거·부작용 한계]
+
+# Output
+[형식·길이. plain Markdown 디폴트]
+
+# Stop Rules
+- 도구 루프·재시도·중단 조건
+- "Can I answer the core request now with useful evidence?" 자가점검
+```
+
+#### 핵심 블록 6개
+
+| 블록 | 용도 |
+|------|------|
+| `outcome_first_structure` | destination + success criteria 우선 정의 |
+| `personality_and_collaboration` | 톤·협업 스타일 분리 정의 |
+| `constraints_block` | 정책·증거·부작용 한계 압축 |
+| `output_contract` | 응답 구조·길이 가벼운 명시 |
+| `stop_rules` | 도구 루프·재시도·중단 조건 |
+| `validation_rules` | coding/visual/planning 별 검증 트리거 |
+
+#### Reasoning Effort 권장값 (GPT-5.5 기준)
+
+| 작업 | 권장 effort |
+|------|------------|
+| 일반 Q&A, 짧은 작업 | `low` (5.4 대비 1단계 낮춤) |
+| 중간 복잡도 분석/추출 | `medium` |
+| 장기 코딩, 다단 검증 | `high` |
+| 안전·법률·금융 고위험 | `xhigh` |
+
+#### Anti-Patterns (회피)
+
+- ❌ GPT-5.4 XML stack을 그대로 5.5에 이전
+- ❌ judgment 영역에 ALWAYS/NEVER 절대 규칙
+- ❌ outcome 명확한데 step sequence 강요
+- ❌ 탐색 전 multi-step plan 강제
+- ❌ retrieval로 wording 다듬기
+- ❌ 구조화 포맷 디폴트
+- ❌ Codex CLI에 preamble 요구 (조기 종료 유발)
+
+#### Migration: GPT-5.4 → GPT-5.5
+
+| 5.4 블록 | 5.5 대체 |
+|---------|----------|
+| `<output_verbosity_spec>` | `# Output` + `text.verbosity = "low"` |
+| `<design_and_scope_constraints>` | `# Constraints` + outcome 명시 |
+| `<uncertainty_and_ambiguity>` | `# Stop Rules` 자가점검 |
+| `<tool_usage_rules>` | `# Stop Rules` + Preamble |
+| `<extraction_spec>` | `# Output` (스키마) + `# Stop Rules` |
+| `<output_contract>` | `# Output` (간소화) |
+| `<follow_through_policy>` | `# Stop Rules` 통합 |
+| `<completeness_contract>` | `# Success Criteria` |
+| `<tool_persistence>` | `# Stop Rules` |
+| `<eagerness_control>` | `# Stop Rules` ("fewest useful tool loops") |
+
+> **호환성**: 사용자가 "5.4 XML 스타일"을 GPT-5.5에 적용 요청 시 그대로 따름. 디폴트는 outcome-first.
 
 ---
 
@@ -1646,8 +1739,8 @@ operation = client.models.generate_videos(
 | `context-engineering-collection` | 컨텍스트 엔지니어링 원칙 |
 | `ce-context-fundamentals` | 기본 원칙 (시스템 프롬프트 구조화) |
 | `ce-context-optimization` | 최적화 기법 (토큰 효율성) |
-| `gpt-5.4-prompt-enhancement` | GPT-5.2/5.4 XML 패턴 상세 (에이전틱 패턴 포함) |
-| `claude-4.6-prompt-strategies` | Claude 4.5/4.6 프롬프트 전략 가이드 |
+| `gpt-5.5-prompt-enhancement` | GPT 5.x 통합 — outcome-first markdown(5.5) + legacy XML stack(5.4/5.2) |
+| `claude-4.7-prompt-strategies` | Claude 4.x 프롬프트 전략 가이드 (Opus 4.5/4.6/4.7 + Sonnet 4.5/4.6 + Haiku 4.5) |
 | `gemini-3.1-prompt-strategies` | Gemini 3 프롬프트 전략 (NB2 포함) |
 | `image-prompt-guide` | 이미지 생성 프롬프트 가이드 (공냥이 @specal1849 자료 기반) |
 | `research-prompt-guide` | 팩트체크/리서치 프롬프트 가이드 (IFCN 원칙 기반) |
@@ -1830,9 +1923,17 @@ operation = client.models.generate_videos(
 ## Skill Metadata
 
 **Created**: 2025-12-27
-**Last Updated**: 2026-03-08
+**Last Updated**: 2026-05-02
 **Author**: Claude Code
-**Version**: 2.0.0
+**Version**: 2.1.1
+
+**Changes v2.1.1** (2026-05-02):
+- **[PATCH] 파일명 정정**: `claude-4.6-prompt-strategies.md` → `claude-4.7-prompt-strategies.md` (1개 본문 + 1개 표 항목, 실제 rename 반영)
+
+**Changes v2.1.0** (2026-04-30):
+- **[MAJOR] GPT-5.5 outcome-first 섹션 추가**: 2026-04 공식 [GPT-5.5 Prompt Guidance](https://developers.openai.com/api/docs/guides/prompt-guidance?model=gpt-5.5) 반영. Markdown 6섹션 구조(Role/Personality/Goal/Success Criteria/Constraints/Output/Stop Rules) + 6개 핵심 블록 정의 + Migration 매핑(5.4 12블록 → 5.5 6섹션) + Anti-patterns
+- **[MAJOR] 모델 라우팅 가이드**: GPT-5.5 디폴트 outcome-first / GPT-5.2-5.4 legacy XML stack / "5.4 XML 스타일" 명시 시 fallback
+- **[MEDIUM] Reasoning Effort 권장값 갱신**: GPT-5.5 기준 5.4 대비 1단계 낮춤 (low/medium 우선)
 
 **Changes v2.0.0**:
 - **[CRITICAL] Claude 4.6 모델 추가**: Adaptive Thinking, Effort Parameter, Prefill 제거 주의사항

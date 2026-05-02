@@ -1,6 +1,6 @@
 # 프롬프트 엔지니어링 스킬
 
-> **모델 순위**: [LMArena Leaderboard](https://lmarena.ai) 기반 (2026년 3월 기준)
+> **모델 순위**: [LMArena Leaderboard](https://lmarena.ai) 기반 (2026년 4월 기준)
 
 Claude Code, ChatGPT GPTs, Gemini Gems를 위한 종합 AI 프롬프트 엔지니어링 스킬 모음입니다.
 
@@ -23,25 +23,27 @@ Claude Code, ChatGPT GPTs, Gemini Gems를 위한 종합 AI 프롬프트 엔지�
 
 | 모델 | 커버리지 |
 |------|----------|
-| **GPT-5.4 / GPT-5.4-Codex** | XML 패턴, reasoning_effort, Compaction |
-| **Claude 4.6 (Opus/Sonnet)** | 명시적 지시, Adaptive Thinking |
-| **Gemini 3** | Constraints First, 멀티모달 컨텍스트 |
-| **Veo 3.1** | 오디오 포함 동영상 생성 |
-| **Gemini Image** | 이미지 생성 |
+| **GPT-5.5 / GPT-5.5-Codex** | Outcome-first 마크다운 6섹션 (Role/Personality/Goal/Success Criteria/Constraints/Output/Stop Rules) |
+| **GPT-5.4 / GPT-5.2** (legacy) | XML 12블록 stack, reasoning_effort, Compaction |
+| **Claude Opus 4.7 / Sonnet 4.6** | Adaptive Thinking + effort=xhigh, prefill 금지, literal instruction following |
+| **Claude 4.5/4.6** (명시 시) | XML + Extended Thinking, budget_tokens·temperature·prefill OK |
+| **Gemini 3.1 Pro / Flash** | Constraints First, 멀티모달 컨텍스트 |
+| **Veo 3.1 / Seedance / Kling 3.0** | 동영상 생성 (오디오 포함, 다국어 대사 stage direction) |
+| **Nano Banana 2 (Gemini 3.1 Flash Image) / gpt-image-2** | 이미지 생성 |
 
 ### 목적별 추천 모델 (LMArena 기준)
 
-> 출처: [LMArena Leaderboard](https://lmarena.ai) - 사용자 투표 기반 순위
+> 출처: [LMArena Leaderboard](https://lmarena.ai) — 사용자 투표 기반 (2026년 4월)
 
 | 목적 | 1순위 | 2순위 | 3순위 |
 |------|-------|-------|-------|
-| **코딩/개발** | Claude Opus 4.6 | GPT-5.4 | Gemini 3.1 Pro |
-| **수학/논리** | Claude Opus 4.6 | Gemini 3.1 Pro | GPT-5.4 |
-| **글쓰기/창작** | Gemini 3.1 Pro | Gemini 3 Pro | Claude Opus 4.6 |
-| **이미지 생성** | NanoBanana2 (Gemini 3.1 Flash Image) | GPT Image 1.5 | gpt-image |
-| **동영상 생성** | Kling 3.0 | Grok Imagine Video | Veo 3 |
-| **웹 검색/리서치** | Claude Opus 4.6 Search | GPT-5.2 Search | Gemini 3 Pro Grounding |
-| **팩트체크** | **GPT-5.4 Thinking** | Gemini 3 Pro Grounding | Perplexity Sonar Pro |
+| **코딩/개발** | Claude Opus 4.7 (`xhigh`+adaptive) | Claude Opus 4.6 (안정성) | GPT-5.5 Codex |
+| **수학/논리** | Claude Opus 4.7 | Gemini 3.1 Pro | GPT-5.5 |
+| **글쓰기/창작** | Gemini 3.1 Pro | Claude Opus 4.7 | Gemini 3 Pro |
+| **이미지 생성** | gpt-image-2 | NanoBanana2 (Gemini 3.1 Flash Image) | Gemini 3 Pro Image |
+| **동영상 생성** | Veo 3.1 | Kling 3.0 | Seedance |
+| **웹 검색/리서치** | Claude Opus 4.7 Search | GPT-5.5 Search | Gemini 3 Pro Grounding |
+| **팩트체크** | GPT-5.5 Thinking | Gemini 3 Pro Grounding | Perplexity Sonar Pro |
 
 ---
 
@@ -49,33 +51,35 @@ Claude Code, ChatGPT GPTs, Gemini Gems를 위한 종합 AI 프롬프트 엔지�
 
 ```
 prompt-engineering-skills/
-├── README.md                           # 이 파일
-├── LICENSE                             # MIT 라이선스
+├── README.md                            # 이 파일
+├── LICENSE                              # MIT 라이선스
 │
-├── skills/                             # 핵심 스킬 파일
-│   ├── prompt-engineering-guide.md     # 모델별 프롬프트 전략
-│   ├── image-prompt-guide.md           # 이미지 생성 가이드
-│   ├── gpt-5.4-prompt-enhancement.md   # GPT-5.4 전용 패턴
-│   ├── claude-4.6-prompt-strategies.md # Claude 4.6 전용 전략
-│   ├── gemini-3.1-prompt-strategies.md # Gemini/Veo/Nano Banana 전략
-│   ├── context-engineering-collection.md  # CE 원칙
-│   ├── expert-domain-priming.md        # 전문 도메인 프라이밍
-│   ├── research-prompt-guide.md        # 검색/리서치 프롬프트 가이드
-│   └── slide-prompt-guide.md           # 슬라이드 프롬프트 가이드
+├── skills/                              # 핵심 스킬 파일 (9개)
+│   ├── prompt-engineering-guide.md      # 모델별 프롬프트 전략 (메인)
+│   ├── claude-4.7-prompt-strategies.md  # Claude 4.x 전략 (Opus 4.5/4.6/4.7 + Sonnet 4.5/4.6 + Haiku 4.5)
+│   ├── gpt-5.5-prompt-enhancement.md    # GPT-5.5 outcome-first + GPT-5.4/5.2 legacy XML stack
+│   ├── gemini-3.1-prompt-strategies.md  # Gemini / Veo 3.1 / Nano Banana 전략
+│   ├── image-prompt-guide.md            # 이미지 + 동영상 프롬프트 가이드 (공냥이 @specal1849)
+│   ├── research-prompt-guide.md         # 리서치/팩트체크 IFCN 프롬프트 (두부 @tofukyung)
+│   ├── expert-domain-priming.md         # 전문가 도메인 프라이밍 DB (12 도메인 60+명)
+│   ├── slide-prompt-guide.md            # 슬라이드/PPT 프롬프트 (27 비주얼 스타일)
+│   └── context-engineering-collection.md # Context Engineering 원칙
 │
-├── commands/                           # Claude Code 커맨드
-│   ├── prompt.md                       # /prompt 커맨드
-│   └── prompt-sync.md                  # /prompt-sync 동기화 커맨드
+├── commands/                            # Claude Code 슬래시 커맨드
+│   ├── prompt.md                        # /prompt — 프롬프트 생성기
+│   └── prompt-sync.md                   # /prompt-sync — 통합 동기화 에이전트
 │
-├── instructions/                       # GPTs/Gems 시스템 프롬프트
-│   ├── GPTs-Prompt-Generator.md        # ChatGPT GPTs용
-│   └── Gems-Prompt-Generator.md        # Gemini Gems용
+├── instructions/                        # GPTs/Gems 시스템 프롬프트
+│   ├── GPTs-Prompt-Generator.md         # ChatGPT GPTs용 (8000자 한도)
+│   └── Gems-Prompt-Generator.md         # Gemini Gems용
 │
-└── examples/                           # 사용 예시
+└── examples/                            # 사용 예시
     ├── gpt-5.4-examples.md
     ├── claude-4.5-examples.md
     └── image-generation-examples.md
 ```
+
+> ⚠️ **GPTs/Gems 첨부파일 10개 한도** — 현재 9개. 모델 추가 시 통합/축소 검토 필요.
 
 ---
 
@@ -118,7 +122,6 @@ Write-Host "✅ 설치 완료! 이제 모든 프로젝트에서 /prompt 사용 �
 #### 수동 설치 (글로벌)
 
 ```bash
-# 글로벌 설치 (모든 프로젝트에서 사용)
 cp skills/*.md ~/.claude/skills/
 cp commands/*.md ~/.claude/commands/
 ```
@@ -155,13 +158,13 @@ Write-Host "✅ 동기화 완료!" -ForegroundColor Green
 ### ChatGPT GPTs 직접 만들기
 
 1. [GPT Editor](https://chat.openai.com/gpts/editor) 접속
-2. `skills/` 폴더의 파일을 **Knowledge**에 업로드
-3. `instructions/GPTs-Prompt-Generator.md` 내용을 **Instructions**에 붙여넣기
+2. `skills/` 폴더의 9개 파일을 **Knowledge**에 업로드 (10개 한도)
+3. `instructions/GPTs-Prompt-Generator.md` 내용을 **Instructions**에 붙여넣기 (8000자 한도)
 
 ### Gemini Gems 직접 만들기
 
 1. [Gems 설정](https://gemini.google.com/gems) 접속
-2. `skills/` 폴더의 파일을 **지식 파일**에 업로드
+2. `skills/` 폴더의 9개 파일을 **지식 파일**에 업로드 (10개 한도)
 3. `instructions/Gems-Prompt-Generator.md` 내용을 **지침**에 붙여넣기
 
 ---
@@ -171,24 +174,65 @@ Write-Host "✅ 동기화 완료!" -ForegroundColor Green
 ### prompt-engineering-guide.md
 
 메인 스킬 파일:
-- 모델별 프롬프트 전략
-- 각 모델의 필수 XML 블록
+- 모델별 프롬프트 전략 (GPT-5.5 outcome-first / Claude 4.x XML / Gemini Constraints First)
+- 각 모델의 필수 블록과 권장 패턴
 - Context Engineering 원칙
 - 목적별 템플릿
 - 품질 체크리스트
 
 ### image-prompt-guide.md
 
-공냥이(@specal1849)님의 자료를 기반으로 한 종합 이미지 생성 가이드:
+공냥이(@specal1849)님의 자료를 기반으로 한 종합 이미지/동영상 가이드:
 - 시그널(Signal)과 신뢰도(Faithful) 개념
 - 프롬프트 형식 비교 (JSON/XML/Markdown/자연어)
-- 스타일별 템플릿 (제품/푸드/패션/캐릭터 등)
-- 조명 및 카메라 기법
-- 인포그래픽 제작 가이드
+- 스타일별 템플릿 (제품/푸드/패션/캐릭터/만화 등)
+- 조명·카메라 기법
+- 동영상 JSON 구조 (Veo / Sora / Seedance / Kling 공통)
+- 비영어 대사 + 영어 감정 메타 지시 패턴 (다국어 stage direction)
+- 슬라이드 이미지 + NanoBanana2 (Gemini 3.1 Flash Image)
+
+### claude-4.7-prompt-strategies.md
+
+Claude 4.x 통합 전략:
+- Opus 4.7: adaptive thinking + effort=xhigh, budget_tokens 제거, prefill 금지
+- Opus 4.6: budget_tokens·temperature·prefill OK (명시 시 fallback)
+- Sonnet 4.5/4.6, Haiku 4.5 패턴
+- 4.6→4.7 전환 회귀 매트릭스 (Part 0.5)
+
+### gpt-5.5-prompt-enhancement.md
+
+GPT-5.5 공식 outcome-first 가이드 + GPT-5.4/5.2 legacy XML stack 통합:
+- 마크다운 6섹션 (Role / Personality / Goal / Success Criteria / Constraints / Output / Stop Rules)
+- Migration 매핑 (5.4 12블록 → 5.5 6섹션)
+- Reasoning Effort 권장값 (low/medium 우선)
+- Anti-patterns
+
+### expert-domain-priming.md
+
+12 도메인 60+ 전문가 DB:
+- "act as an expert" 대신 실존 전문가 직접 지명
+- 잠재 공간(Latent Space) 활성화 / MoE 라우팅 시그널
+- 5가지 역할 점검 (범위/목적/형식/금지/행동) + 금지어 6개
+
+### research-prompt-guide.md
+
+리서치 / 팩트체크 IFCN 가이드 (두부 @tofukyung):
+- 출처 검증 / 교차검증 / 인라인 인용
+- Universal-FactCheck 프롬프트
+
+### slide-prompt-guide.md
+
+슬라이드 / PPT 프롬프트:
+- 27 비주얼 스타일 + 7 내러티브 모드
+- shared_style + session_id 일관성
+
+### gemini-3.1-prompt-strategies.md
+
+Gemini 3 Pro / Flash + Veo 3.1 + Nano Banana / NB2 전략.
 
 ### context-engineering-collection.md
 
-[Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering)을 기반으로 한 Context Engineering 원칙:
+[Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering) 기반 CE 원칙:
 - Attention Budget 관리
 - 컨텍스트 저하 방지
 - 멀티 에이전트 패턴
@@ -198,7 +242,16 @@ Write-Host "✅ 동기화 완료!" -ForegroundColor Green
 
 ## 지원 모델
 
-### GPT-5.4 / GPT-5.4-Codex
+### GPT-5.5 / GPT-5.5-Codex
+
+| 기능 | 패턴 |
+|------|------|
+| 구조 | Markdown 6섹션 (outcome-first) |
+| 핵심 블록 | Role / Personality / Goal / Success Criteria / Constraints / Output / Stop Rules |
+| Reasoning Effort | low / medium 우선, 부족 시 escalate |
+| Codex 원칙 | "Less is More" — preamble 요구 금지 |
+
+### GPT-5.4 / GPT-5.2 (legacy XML)
 
 | 기능 | 패턴 |
 |------|------|
@@ -207,25 +260,33 @@ Write-Host "✅ 동기화 완료!" -ForegroundColor Green
 | 불확실성 처리 | `<uncertainty_and_ambiguity>` |
 | 도구 사용 | `<tool_usage_rules>` |
 
-**Codex 핵심 원칙**: "Less is More" - 최소한의 프롬프팅이 최적
-
-### Claude 4.6
+### Claude Opus 4.7 (디폴트)
 
 | 기능 | 패턴 |
 |------|------|
-| 기본 행동 | `<default_to_action>` |
-| 명시적 지시 | 모든 행동에 필수 |
-| Extended Thinking | 복잡한 추론 시 활성화 |
-| 병렬 도구 호출 | `<use_parallel_tool_calls>` |
+| Thinking | `thinking={"type":"adaptive"}` + `effort="xhigh"` |
+| 금지 | `budget_tokens` / `temperature` / `top_p` / prefill 사용 금지 (400 에러) |
+| Instruction following | Literal — 모호한 표현 금지 |
+| 병렬 도구 호출 | `<use_parallel_tool_calls>` + `<investigate_before_answering>` |
 
-### Gemini 3 / Veo 3.1 / Gemini Image
+### Claude Opus 4.6 / Sonnet 4.6 (명시 시 fallback)
+
+| 기능 | 패턴 |
+|------|------|
+| Thinking | `thinking={"type":"enabled","budget_tokens":N}` 또는 `"adaptive"` |
+| 허용 | `budget_tokens` / `temperature` / prefill OK |
+| 기본 행동 | `<default_to_action>` |
+| Extended Thinking | 복잡한 추론 시 활성화 |
+
+### Gemini 3.1 / Veo 3.1 / Gemini Image
 
 | 기능 | 패턴 |
 |------|------|
 | Constraints First | 제약 조건을 최상단에 배치 |
 | Temperature | 1.0 권장 |
 | 멀티모달 | 이미지/오디오 컨텍스트 네이티브 지원 |
-| Veo 오디오 | 대화, 음향효과, 배경음 |
+| Veo 오디오 | 대화, 음향효과, 배경음 (네이티브) |
+| 다국어 대사 | `(English emotion descriptor in {Language}) "대사"` 패턴 |
 
 ---
 
@@ -237,13 +298,23 @@ Write-Host "✅ 동기화 완료!" -ForegroundColor Green
 - [Image Prompt 101 슬라이드](https://docs.google.com/presentation/d/1rPQVnbu1INJyUAqCvMA7dkO2WzJpD4Q9q_UXq9RH2GU/edit)
 - [PRO Image Prompt Notion](https://fascinated-alley-b43.notion.site/PRO-2b1861d1faaf80b8bf7ef4093827f59b)
 
+### 비영어 대사 동영상 패턴
+
+[@itsyun_ai](https://www.threads.com/@itsyun_ai/post/DXyxUwXghcR) Threads 포스트 기반 (Seedance 한국어 대사 검증, 2026-05-01) → Veo / Sora / Kling 일반화.
+
+### 전문가 도메인 프라이밍
+
+- 최승준 소장님, 노정석 — "Master Class - 원리를 생각하는 프롬프팅"
+- [erucipe Notion A-Z](https://erucipe.notion.site/A-Z-2e3d5c9e7e5980c4a593f1994582f1ab)
+- 공냥이(@specal1849) — "프롬프트 쿠튀르: 전문가의 AI 활용법"
+
 ### 컨텍스트 엔지니어링
 
-Muratcan Koylan의 [Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering) 기반
+Muratcan Koylan의 [Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering) 기반.
 
 ### 모델 문서
 
-OpenAI, Anthropic, Google 공식 문서 참조
+OpenAI, Anthropic, Google 공식 문서 참조.
 
 ---
 
@@ -261,45 +332,19 @@ MIT License - [LICENSE](./LICENSE) 참조
 
 ## 버전
 
-- **현재**: 2.2.0
-- **최종 업데이트**: 2026-03-08
-- **변경사항 v2.2.0**:
+- **현재**: 2.3.0
+- **최종 업데이트**: 2026-05-02
+- **변경사항 v2.3.0** (2026-05-02):
+  - **[MAJOR] Repo URL 정정**: `tofukyung/prompt-engineering-skills` → `treylom/prompt-engineering-skills` (모든 clone 명령)
+  - **[MAJOR] 모델 라인업 갱신**: GPT-5.5 outcome-first 디폴트 추가 (5.4/5.2 legacy 분리), Claude Opus 4.7 디폴트 + 4.6 명시 시 fallback, Gemini 3.1 Pro
+  - **[MAJOR] 추천 모델 표 갱신**: 코딩 1순위 Opus 4.7(`xhigh`+adaptive), 동영상 Veo 3.1 / Kling 3.0 / Seedance, 이미지 gpt-image-2 / NB2
+  - **[MAJOR] Skills 9개 정확 표기**: claude-4.7 / gpt-5.5 / gemini-3.1 / image / research / expert-domain-priming / slide / context-engineering / prompt-engineering-guide
+  - **[MEDIUM] 비영어 대사 동영상 패턴 안내**: Veo / Sora / Seedance / Kling 공통 stage direction 컨벤션 (image-prompt-guide v1.10.0)
+  - **[MEDIUM] 지원 모델 섹션 신설**: GPT-5.5 outcome-first / GPT-5.4 legacy / Claude 4.7 / 4.6 / Gemini 3.1 4 카테고리
+- **변경사항 v2.2.0** (2026-03-08):
   - LMArena/Artificial Analysis 2026년 3월 벤치마크 기준 전체 순위 업데이트
-  - 텍스트/코드: Claude Opus 4.6 #1, GPT-5.4 반영
-  - 이미지: NanoBanana2 (Gemini 3.1 Flash Image) #1, GPT Image 1.5 #2
-  - 동영상: Kling 3.0 #1, Grok Imagine Video #2 (Veo 3.1 순위 하락)
-  - 검색: Claude Opus 4.6 Search #1, GPT-5.4 Search #2
+  - 텍스트/코드, 이미지, 동영상, 검색 카테고리 갱신
   - GPTs/Gems Prompt Generator v2.2.0 동기화
-- **변경사항 v1.8.0**:
-  - 동영상 프롬프트 JSON 구조 통일: 모든 동영상에 스토리보드 형식(scenes 배열) 적용
-  - GPTs 기본 모델: Sora 2, Gems 기본 모델: Veo 3.1
-  - 스토리보드 필수 요소 체크리스트 추가 (sequence, duration, description, camera, audio)
-- **변경사항 v1.7.0**:
-  - 동영상 생성 시 스토리보드 단계 필수화 (생략 금지)
-  - 스토리보드 JSON 구조 상세화 (lighting, character action, camera motion 등)
-- **변경사항 v1.6.0**:
-  - 명시적 요소 확장: 사용자 입력에서 암시적 요소를 구체적으로 풀어쓰기
-  - Agent 모드 프롬프트 지원 추가
-- **변경사항 v1.5.0**:
-  - 모든 채널(GPTs, Gems, Skills) 버전 1.5.0으로 통일
-  - 동영상 프롬프트 JSON+자연어 형식으로 통일 (이미지와 동일)
-  - gpt-image 모델명 통일 (DALL-E/GPT Image 1.5 → gpt-image)
-  - `/prompt-sync` 명령어 추가: 자동 업데이트 동기화
-  - 원클릭 설치/동기화 스크립트 추가
-  - 진행 상황 표시 (🔍→🧠→✅) 추가
-  - $ARGUMENTS 처리 규칙 추가
-- **변경사항 v1.4.0**:
-  - README 버전 정보 동기화
-  - GPTs-Prompt-Generator: v5.2.0 (워크플로우 전면 개편, 모든 작업 금지사항 적용)
-  - Gems-Prompt-Generator: v4.3.0 (네이티브 이미지 생성 호출 명시)
-  - commands/prompt.md: v4.1.0 (금지사항 강화, 개선 옵션 UI)
-- **변경사항 v1.3.0**:
-  - 검색/리서치 모델 추천 추가 (Search Arena 기준)
-  - 팩트체크: GPT-5.2 Thinking 고정 추천
-  - research-prompt-guide.md 스킬 파일 추가
-- **변경사항 v1.2.0**:
-  - 빠른 프리셋 제거 → LMArena 기반 목적별 추천으로 대체
-  - 모든 문서에 LMArena 출처 명시
 
 ---
 
@@ -307,7 +352,7 @@ MIT License - [LICENSE](./LICENSE) 참조
 
 # Prompt Engineering Skills
 
-> **Model Rankings**: Based on [LMArena Leaderboard](https://lmarena.ai) (March 2026)
+> **Model Rankings**: Based on [LMArena Leaderboard](https://lmarena.ai) (April 2026)
 
 A comprehensive collection of AI prompt engineering skills for Claude Code, ChatGPT GPTs, and Gemini Gems.
 
@@ -320,7 +365,7 @@ Use these links without any setup:
 | Platform | Link |
 |----------|------|
 | **ChatGPT GPTs** | [Tofukyung Comprehensive Prompt Generator](https://chatgpt.com/g/g-694feb6bf18481918acd876e3c3eed37-tofukyung-jonghab-peurompeuteu-saengseonggi) |
-| **Gemini Gems** | [Prompt Generator Gem](https://gemini.google.com/gem/1yY760AO5nQsnBs4kGTdxAJXdQRAIDdOD?usp=sharing) |
+| **Gemini Gems** | [Prompt Generator Gem](https://gemini.google.com/gem/1ZV9S3vNOwExi4_yLHRJKFtpNpATPDI5d?usp=sharing) |
 
 ---
 
@@ -330,25 +375,27 @@ This repository provides production-ready prompt engineering resources optimized
 
 | Model | Coverage |
 |-------|----------|
-| **GPT-5.4 / GPT-5.4-Codex** | XML patterns, reasoning_effort, Compaction |
-| **Claude 4.6 (Opus/Sonnet)** | Explicit instructions, Extended Thinking |
-| **Gemini 3.1 Pro** | Constraints First, multimodal context |
-| **Veo 3.1** | Video generation with audio |
-| **Gemini Image** | Image generation |
+| **GPT-5.5 / GPT-5.5-Codex** | Outcome-first markdown 6 sections (Role/Personality/Goal/Success Criteria/Constraints/Output/Stop Rules) |
+| **GPT-5.4 / GPT-5.2** (legacy) | XML 12-block stack, reasoning_effort, Compaction |
+| **Claude Opus 4.7 / Sonnet 4.6** | Adaptive Thinking + effort=xhigh, no prefill, literal instruction following |
+| **Claude 4.5/4.6** (when specified) | XML + Extended Thinking, budget_tokens·temperature·prefill OK |
+| **Gemini 3.1 Pro / Flash** | Constraints First, multimodal context |
+| **Veo 3.1 / Seedance / Kling 3.0** | Video generation (audio-native, multilingual dialogue stage direction) |
+| **Nano Banana 2 (Gemini 3.1 Flash Image) / gpt-image-2** | Image generation |
 
 ### Recommended Models by Purpose (LMArena)
 
-> Source: [LMArena Leaderboard](https://lmarena.ai) - User voting based rankings
+> Source: [LMArena Leaderboard](https://lmarena.ai) — User voting based (April 2026)
 
 | Purpose | 1st | 2nd | 3rd |
 |---------|-----|-----|-----|
-| **Coding/Dev** | Claude Opus 4.6 | GPT-5.4 | Gemini 3.1 Pro |
-| **Math/Logic** | Claude Opus 4.6 | Gemini 3.1 Pro | GPT-5.4 |
-| **Writing/Creative** | Gemini 3.1 Pro | Gemini 3 Pro | Claude Opus 4.6 |
-| **Image Generation** | NanoBanana2 (Gemini 3.1 Flash Image) | GPT Image 1.5 | gpt-image |
-| **Video Generation** | Kling 3.0 | Grok Imagine Video | Veo 3 |
-| **Web Search/Research** | Claude Opus 4.6 Search | GPT-5.4 Search | Gemini 3 Pro Grounding |
-| **Fact-Check** | **GPT-5.4 Thinking** | Grok 4.20 Search | Perplexity Sonar Pro |
+| **Coding/Dev** | Claude Opus 4.7 (`xhigh`+adaptive) | Claude Opus 4.6 (stability) | GPT-5.5 Codex |
+| **Math/Logic** | Claude Opus 4.7 | Gemini 3.1 Pro | GPT-5.5 |
+| **Writing/Creative** | Gemini 3.1 Pro | Claude Opus 4.7 | Gemini 3 Pro |
+| **Image Generation** | gpt-image-2 | NanoBanana2 (Gemini 3.1 Flash Image) | Gemini 3 Pro Image |
+| **Video Generation** | Veo 3.1 | Kling 3.0 | Seedance |
+| **Web Search/Research** | Claude Opus 4.7 Search | GPT-5.5 Search | Gemini 3 Pro Grounding |
+| **Fact-Check** | GPT-5.5 Thinking | Gemini 3 Pro Grounding | Perplexity Sonar Pro |
 
 ---
 
@@ -356,33 +403,35 @@ This repository provides production-ready prompt engineering resources optimized
 
 ```
 prompt-engineering-skills/
-├── README.md                           # This file
-├── LICENSE                             # MIT License
+├── README.md                             # This file
+├── LICENSE                               # MIT License
 │
-├── skills/                             # Core skill files
-│   ├── prompt-engineering-guide.md     # Multi-model prompt strategies
-│   ├── image-prompt-guide.md           # Image generation guide
-│   ├── gpt-5.4-prompt-enhancement.md   # GPT-5.4 specific patterns
-│   ├── claude-4.6-prompt-strategies.md # Claude 4.6 specific strategies
-│   ├── gemini-3.1-prompt-strategies.md # Gemini/Veo/Nano Banana strategies
-│   ├── context-engineering-collection.md  # CE principles
-│   ├── expert-domain-priming.md        # Expert domain priming
-│   ├── research-prompt-guide.md        # Search/research prompt guide
-│   └── slide-prompt-guide.md           # Slide prompt guide
+├── skills/                               # Core skill files (9 files)
+│   ├── prompt-engineering-guide.md       # Multi-model prompt strategies (main)
+│   ├── claude-4.7-prompt-strategies.md   # Claude 4.x strategies (Opus 4.5/4.6/4.7 + Sonnet 4.5/4.6 + Haiku 4.5)
+│   ├── gpt-5.5-prompt-enhancement.md     # GPT-5.5 outcome-first + GPT-5.4/5.2 legacy XML stack
+│   ├── gemini-3.1-prompt-strategies.md   # Gemini / Veo 3.1 / Nano Banana strategies
+│   ├── image-prompt-guide.md             # Image + video prompt guide (@specal1849)
+│   ├── research-prompt-guide.md          # Research/fact-check IFCN prompts (@tofukyung)
+│   ├── expert-domain-priming.md          # Expert domain priming DB (12 domains, 60+ experts)
+│   ├── slide-prompt-guide.md             # Slide/PPT prompts (27 visual styles)
+│   └── context-engineering-collection.md # Context Engineering principles
 │
-├── commands/                           # Claude Code commands
-│   ├── prompt.md                       # /prompt command
-│   └── prompt-sync.md                  # /prompt-sync sync command
+├── commands/                             # Claude Code slash commands
+│   ├── prompt.md                         # /prompt — prompt generator
+│   └── prompt-sync.md                    # /prompt-sync — unified sync agent
 │
-├── instructions/                       # GPTs/Gems system prompts
-│   ├── GPTs-Prompt-Generator.md        # For ChatGPT GPTs
-│   └── Gems-Prompt-Generator.md        # For Gemini Gems
+├── instructions/                         # GPTs/Gems system prompts
+│   ├── GPTs-Prompt-Generator.md          # For ChatGPT GPTs (8000-char limit)
+│   └── Gems-Prompt-Generator.md          # For Gemini Gems
 │
-└── examples/                           # Usage examples
+└── examples/                             # Usage examples
     ├── gpt-5.4-examples.md
     ├── claude-4.5-examples.md
     └── image-generation-examples.md
 ```
+
+> ⚠️ **GPTs/Gems attachment 10-file limit** — currently 9. Review consolidation when adding new models.
 
 ---
 
@@ -425,7 +474,6 @@ Run the **global install** command above to use in all projects.
 #### Manual Install (Global)
 
 ```bash
-# Global install (use in all projects)
 cp skills/*.md ~/.claude/skills/
 cp commands/*.md ~/.claude/commands/
 ```
@@ -462,50 +510,45 @@ Write-Host "✅ Sync complete!" -ForegroundColor Green
 ### Create Your Own ChatGPT GPTs
 
 1. Go to [GPT Editor](https://chat.openai.com/gpts/editor)
-2. Upload files from `skills/` to **Knowledge**
-3. Paste `instructions/GPTs-Prompt-Generator.md` into **Instructions**
+2. Upload the 9 files from `skills/` to **Knowledge** (10-file limit)
+3. Paste `instructions/GPTs-Prompt-Generator.md` into **Instructions** (8000-char limit)
 
 ### Create Your Own Gemini Gems
 
 1. Go to [Gems Settings](https://gemini.google.com/gems)
-2. Upload files from `skills/` to **Knowledge files**
+2. Upload the 9 files from `skills/` to **Knowledge files** (10-file limit)
 3. Paste `instructions/Gems-Prompt-Generator.md` into **Instructions**
 
 ---
 
 ## Core Skills
 
-### prompt-engineering-guide.md
+See the Korean section above for full skill descriptions. Quick summary:
 
-The main skill file covering:
-- Model-specific prompt strategies
-- Required XML blocks for each model
-- Context Engineering principles
-- Purpose-specific templates
-- Quality checklists
-
-### image-prompt-guide.md
-
-Comprehensive image generation guide based on [@specal1849](https://threads.net/@specal1849)'s work:
-- Signal and Faithful concepts
-- Prompt format comparison (JSON/XML/Markdown/Natural language)
-- Style templates (Product, Food, Fashion, Character, etc.)
-- Lighting and camera techniques
-- Infographic creation guide
-
-### context-engineering-collection.md
-
-Context Engineering principles based on [Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering):
-- Attention budget management
-- Context degradation prevention
-- Multi-agent patterns
-- Tool design principles
+- **prompt-engineering-guide.md** — main multi-model strategy file
+- **image-prompt-guide.md** — image + video prompts (Veo/Sora/Seedance/Kling video, multilingual stage direction)
+- **claude-4.7-prompt-strategies.md** — Opus 4.7 adaptive + 4.6 fallback patterns
+- **gpt-5.5-prompt-enhancement.md** — GPT-5.5 outcome-first + 5.4/5.2 legacy XML
+- **expert-domain-priming.md** — 12 domains, 60+ named experts, latent-space activation
+- **research-prompt-guide.md** — IFCN-aligned research/fact-check
+- **slide-prompt-guide.md** — 27 visual styles + 7 narrative modes
+- **gemini-3.1-prompt-strategies.md** — Gemini 3 Pro/Flash + Veo + Nano Banana
+- **context-engineering-collection.md** — Context Engineering principles
 
 ---
 
 ## Supported Models
 
-### GPT-5.4 / GPT-5.4-Codex
+### GPT-5.5 / GPT-5.5-Codex
+
+| Feature | Pattern |
+|---------|---------|
+| Structure | Markdown 6 sections (outcome-first) |
+| Core blocks | Role / Personality / Goal / Success Criteria / Constraints / Output / Stop Rules |
+| Reasoning Effort | low / medium first, escalate when needed |
+| Codex principle | "Less is More" — no preamble required |
+
+### GPT-5.4 / GPT-5.2 (legacy XML)
 
 | Feature | Pattern |
 |---------|---------|
@@ -514,25 +557,33 @@ Context Engineering principles based on [Agent Skills for Context Engineering](h
 | Uncertainty Handling | `<uncertainty_and_ambiguity>` |
 | Tool Usage | `<tool_usage_rules>` |
 
-**Codex Key Principle**: "Less is More" - minimal prompting works best
-
-### Claude 4.6
+### Claude Opus 4.7 (default)
 
 | Feature | Pattern |
 |---------|---------|
-| Action by Default | `<default_to_action>` |
-| Explicit Instructions | Required for all behaviors |
-| Extended Thinking | Enable for complex reasoning |
-| Parallel Tool Calls | `<use_parallel_tool_calls>` |
+| Thinking | `thinking={"type":"adaptive"}` + `effort="xhigh"` |
+| Forbidden | `budget_tokens` / `temperature` / `top_p` / prefill (400 error) |
+| Instruction following | Literal — no ambiguous wording |
+| Parallel tool calls | `<use_parallel_tool_calls>` + `<investigate_before_answering>` |
 
-### Gemini 3 / Veo 3.1 / Gemini Image
+### Claude Opus 4.6 / Sonnet 4.6 (when specified)
+
+| Feature | Pattern |
+|---------|---------|
+| Thinking | `thinking={"type":"enabled","budget_tokens":N}` or `"adaptive"` |
+| Allowed | `budget_tokens` / `temperature` / prefill OK |
+| Action by Default | `<default_to_action>` |
+| Extended Thinking | Enable for complex reasoning |
+
+### Gemini 3.1 / Veo 3.1 / Gemini Image
 
 | Feature | Pattern |
 |---------|---------|
 | Constraints First | Place constraints at the top |
 | Temperature | 1.0 recommended |
 | Multimodal | Native image/audio context |
-| Veo Audio | Dialogue, sound effects, ambient |
+| Veo Audio | Dialogue, sound effects, ambient (native) |
+| Multilingual dialogue | `(English emotion descriptor in {Language}) "대사"` pattern |
 
 ---
 
@@ -544,13 +595,23 @@ Based on materials by [공냥이 (@specal1849)](https://threads.net/@specal1849)
 - [Image Prompt 101 Slides](https://docs.google.com/presentation/d/1rPQVnbu1INJyUAqCvMA7dkO2WzJpD4Q9q_UXq9RH2GU/edit)
 - [PRO Image Prompt Notion](https://fascinated-alley-b43.notion.site/PRO-2b1861d1faaf80b8bf7ef4093827f59b)
 
+### Multilingual Video Dialogue Pattern
+
+Based on [@itsyun_ai](https://www.threads.com/@itsyun_ai/post/DXyxUwXghcR) (Seedance Korean dialogue verified 2026-05-01) → generalized to Veo / Sora / Kling.
+
+### Expert Domain Priming
+
+- 최승준, 노정석 — "Master Class - 원리를 생각하는 프롬프팅"
+- [erucipe Notion A-Z](https://erucipe.notion.site/A-Z-2e3d5c9e7e5980c4a593f1994582f1ab)
+- 공냥이(@specal1849) — "Prompt Couture: Expert Use of AI"
+
 ### Context Engineering
 
 Based on [Agent Skills for Context Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering) by Muratcan Koylan.
 
 ### Model Documentation
 
-Official docs from OpenAI, Anthropic, Google
+Official docs from OpenAI, Anthropic, Google.
 
 ---
 
@@ -568,42 +629,16 @@ Contributions welcome! Please read the contributing guidelines before submitting
 
 ## Version
 
-- **Current**: 2.2.0
-- **Last Updated**: 2026-03-08
-- **Changes v2.2.0**:
+- **Current**: 2.3.0
+- **Last Updated**: 2026-05-02
+- **Changes v2.3.0** (2026-05-02):
+  - **[MAJOR] Repo URL fixed**: `tofukyung/prompt-engineering-skills` → `treylom/prompt-engineering-skills` (all clone commands)
+  - **[MAJOR] Model lineup updated**: GPT-5.5 outcome-first default added (5.4/5.2 legacy split), Claude Opus 4.7 default + 4.6 fallback, Gemini 3.1 Pro
+  - **[MAJOR] Recommended models table refreshed**: Coding 1st = Opus 4.7 (`xhigh`+adaptive), Video = Veo 3.1 / Kling 3.0 / Seedance, Image = gpt-image-2 / NB2
+  - **[MAJOR] 9 skills correctly listed**: claude-4.7 / gpt-5.5 / gemini-3.1 / image / research / expert-domain-priming / slide / context-engineering / prompt-engineering-guide
+  - **[MEDIUM] Multilingual video dialogue note**: Veo / Sora / Seedance / Kling shared stage-direction convention (image-prompt-guide v1.10.0)
+  - **[MEDIUM] New Supported Models section**: 4 categories — GPT-5.5 outcome-first / GPT-5.4 legacy / Claude 4.7 / 4.6 / Gemini 3.1
+- **Changes v2.2.0** (2026-03-08):
   - Full ranking update based on LMArena/Artificial Analysis March 2026 benchmarks
-  - Text/Code: Claude Opus 4.6 #1, GPT-5.4 added
-  - Image: NanoBanana2 (Gemini 3.1 Flash Image) #1, GPT Image 1.5 #2
-  - Video: Kling 3.0 #1, Grok Imagine Video #2 (Veo 3.1 dropped)
-  - Search: Claude Opus 4.6 Search #1, GPT-5.4 Search #2
+  - Text/Code, Image, Video, Search categories refreshed
   - GPTs/Gems Prompt Generator v2.2.0 synchronized
-- **Changes v1.8.0**:
-  - Unified video prompt JSON structure: storyboard format (scenes array) for all videos
-  - GPTs default model: Sora 2, Gems default model: Veo 3.1
-  - Added storyboard required elements checklist (sequence, duration, description, camera, audio)
-- **Changes v1.7.0**:
-  - Storyboard step now mandatory for video generation (cannot skip)
-  - Detailed storyboard JSON structure (lighting, character action, camera motion, etc.)
-- **Changes v1.6.0**:
-  - Explicit element expansion: expand implicit elements from user input
-  - Added Agent mode prompt support
-- **Changes v1.5.0**:
-  - Unified all channels (GPTs, Gems, Skills) to version 1.5.0
-  - Video prompts now use JSON+natural language format (same as images)
-  - Standardized gpt-image model naming (DALL-E/GPT Image 1.5 → gpt-image)
-  - Added `/prompt-sync` command: automatic update synchronization
-  - Added one-click install/sync scripts
-  - Added progress indicators (🔍→🧠→✅)
-  - Added $ARGUMENTS handling rules
-- **Changes v1.4.0**:
-  - README version info synchronized
-  - GPTs-Prompt-Generator: v5.2.0 (workflow overhaul, all-task restrictions applied)
-  - Gems-Prompt-Generator: v4.3.0 (native image generation call specified)
-  - commands/prompt.md: v4.1.0 (restrictions strengthened, improvement options UI)
-- **Changes v1.3.0**:
-  - Added search/research model recommendations (Search Arena)
-  - Fact-check: GPT-5.2 Thinking fixed recommendation
-  - Added research-prompt-guide.md skill file
-- **Changes v1.2.0**:
-  - Removed fast presets → Replaced with LMArena-based recommendations
-  - Added LMArena source attribution to all documentation
