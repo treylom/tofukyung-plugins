@@ -82,7 +82,7 @@
       "version": "2.1.0"
     },
     {
-      "name": "lesson-cc-codex",
+      "name": "cc-codex-lessons",
       "source": {
         "source": "url",
         "url": "https://github.com/treylom/lesson-cc-codex.git"
