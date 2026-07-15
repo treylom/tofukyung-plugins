@@ -6,8 +6,6 @@
 .
 ├── .claude-plugin/
 │   └── marketplace.json
-├── plugins/
-│   └── {plugin-name}/
 ├── docs/
 │   └── plugin-standard.md
 └── README.md
@@ -16,7 +14,6 @@
 ## 디렉터리 역할
 
 - `.claude-plugin/marketplace.json`: 마켓플레이스 메타데이터를 관리합니다.
-- `plugins/{plugin-name}/`: 각 플러그인 저장소 또는 서브모듈이 위치합니다.
 - `README.md`: 저장소 소개, 설치 방법, 플러그인 목록, 추천 조합을 안내합니다.
 - `docs/`: 운영 가이드나 작성 규칙처럼 저장소 공통 문서를 둡니다.
 
@@ -32,7 +29,7 @@
 
 ## marketplace.json 작성 원칙
 
-- `source`는 반드시 `./plugins/{name}` 형식을 사용합니다.
+- `source`는 각 플러그인의 정본 저장소를 가리키는 URL 형식(`{"source": "url", "url": "https://github.com/..."}`)을 사용합니다 — 콘텐츠 정본은 각 플러그인 레포, 이 저장소는 설치 창구(마켓 메타데이터)만 관리합니다.
 - `description`은 기능 나열보다 핵심 가치를 보여주는 한 줄로 작성합니다.
 - `tags`는 검색에 바로 도움이 되는 2-4개 키워드만 넣습니다.
 - `category`는 플러그인의 대표 용도를 가장 잘 설명하는 값 하나만 사용합니다.
