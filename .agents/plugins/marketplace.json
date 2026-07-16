@@ -30,10 +30,10 @@
         "source": "url",
         "url": "https://github.com/treylom/tofu-at.git"
       },
-      "version": "1.0.0"
+      "version": "2.0.0"
     },
     {
-      "name": "skills-2.0-upgrade",
+      "name": "skills-2-0-upgrade",
       "description": "Claude Code 스킬을 점검하고 업그레이드해주는 도구",
       "source": {
         "source": "url",
