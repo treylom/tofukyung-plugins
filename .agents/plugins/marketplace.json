@@ -1,6 +1,6 @@
 {
   "name": "tofukyung-plugins",
-  "description": "Claude Code & ChatGPT (Codex) skills & agents by tofukyung — prompt engineering, knowledge management, AI teaching, writing, and more.",
+  "description": "Claude Code & ChatGPT (Codex) plugins by tofukyung — prompt engineering, research, knowledge management, writing, AI teaching, and multi-agent environments.",
   "owner": {
     "name": "tofukyung"
   },
@@ -51,13 +51,13 @@
       "version": "1.0.0"
     },
     {
-      "name": "writing-assistant",
-      "description": "초안을 나다운 글로 다듬어주는 도구",
+      "name": "clone-n-write",
+      "description": "실제 저자의 글쓰기 과정과 문체를 복제하고 코드 게이트로 검증해 나다운 글을 쓰게 해주는 도구",
       "source": {
         "source": "url",
-        "url": "https://github.com/treylom/writing-assistant.git"
+        "url": "https://github.com/treylom/clone-n-write.git"
       },
-      "version": "1.0.0"
+      "version": "2.2.0"
     },
     {
       "name": "lesson-skill",
@@ -94,6 +94,24 @@
         "url": "https://github.com/treylom/tofable.git"
       },
       "version": "0.1.0"
+    },
+    {
+      "name": "thiscode",
+      "description": "Claude Code 작업 환경(Discord 봇·tmux·훅·운영 규칙)을 한 번에 셋업해주는 번들",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/ThisCode.git"
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "thiscodex",
+      "description": "Codex CLI 에이전트를 Claude Code 봇처럼 운영하게 해주는 페르소나·규율 번들",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/ThisCodex.git"
+      },
+      "version": "1.0.0"
     }
   ]
 }

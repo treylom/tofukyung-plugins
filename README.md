@@ -1,6 +1,9 @@
 # tofukyung-plugins
 
-AI를 업무에 녹이고 싶은 사람들을 위한 Claude Code 플러그인 모음입니다.
+![tofukyung-plugins hero](assets/hero.png)
+
+**AI를 업무에 녹이고 싶은 사람들을 위한 Claude Code · Codex 플러그인 모음입니다.**
+
 혼자 더 빠르게 배우고, 자료를 정리하고, 프롬프트를 다듬고, 글과 워크플로우를 실제 결과물로 바꾸는 흐름을 하나의 저장소에 담았습니다.
 각 플러그인은 단독으로도 쓸 수 있지만, 함께 연결하면 조사부터 실행, 기록까지 자연스럽게 이어집니다.
 기업용 툴 번들이 아니라 개인 개발자가 실전에서 다듬어 온 작업 습관과 자동화를 바로 가져다 쓰는 데 초점을 맞췄습니다.
@@ -49,24 +52,77 @@ codex plugin add {플러그인명}@tofukyung-plugins
 
 설치 후 Codex를 다시 시작하면 반영됩니다. Codex 지원 매니페스트(`.codex-plugin/plugin.json`)는 각 플러그인 저장소에 순차 추가 중이며, 준비된 플러그인부터 설치할 수 있습니다.
 
-## Available Plugins
+### ChatGPT Work
 
-| Plugin | Description |
-| --- | --- |
-| [prompt-engineering-skills](https://github.com/treylom/prompt-engineering-skills) | 아이디어를 바로 실행 가능한 프롬프트와 GPTs/Gems 초안으로 바꿔주는 도구 |
-| [knowledge-manager](https://github.com/treylom/knowledge-manager) | 웹·PDF·소셜 자료를 모아 Obsidian과 Notion 흐름에 맞게 정리해주는 도구 |
-| [tofu-at](https://github.com/treylom/tofu-at) | 복잡한 작업을 에이전트 팀으로 분해하고 실행 흐름을 잡아주는 도구 |
-| [skills-2.0-upgrade](https://github.com/treylom/skills-2.0-upgrade) | Claude Code 스킬의 품질을 진단하고 2.0 구조로 업그레이드해주는 도구 |
-| [qwen3-tts-claude-skill](https://github.com/treylom/qwen3-tts-claude-skill) | 작성한 텍스트를 한국어·영어 음성 결과물로 바꿔주는 도구 |
-| [writing-assistant](https://github.com/treylom/writing-assistant) | 페르소나와 문체를 다듬어 초안을 완성도 있는 글로 발전시켜주는 도구 |
-| [lesson-skill](https://github.com/treylom/lesson-skill) | Claude Code를 1:1 적응형 수업처럼 학습하게 도와주는 도구 |
-| [deep-research](https://github.com/treylom/deep-research) | 여러 소스를 모아 교차검증하고 인용이 달린 리서치 보고서를 만들어주는 도구 |
+ChatGPT Work는 마켓플레이스(카탈로그) 단위 등록 대신, 쓰려는 **플러그인 저장소를 직접 등록**하는 방식입니다.
+각 플러그인 저장소 README의 ChatGPT Work 설치 안내를 따르면 되고, Work용 매니페스트(`plugin.json` 쌍)는 준비된 저장소부터 순차 추가 중입니다.
+이 카탈로그 저장소 자체는 Claude Code와 Codex CLI 전용입니다.
+
+## Plugins
+
+### 프롬프트 · 리서치
+
+#### [prompt-engineering-skills](https://github.com/treylom/prompt-engineering-skills) — v2.10.0
+아이디어를 바로 실행 가능한 프롬프트와 GPTs/Gems 초안으로 바꿔주는 도구.
+모델별(Claude·GPT·Gemini·이미지·영상) 최적화 템플릿과 자동 개선 루프를 담았습니다.
+
+#### [deep-research](https://github.com/treylom/deep-research) — v2.1.0
+여러 소스를 모아 교차검증하고 인용이 달린 리서치 보고서를 만들어주는 도구.
+조사 결과에 근거와 신뢰도가 함께 남습니다.
+
+### 지식 정리 · 기록
+
+#### [knowledge-manager](https://github.com/treylom/knowledge-manager) — v1.0.0
+웹·PDF·소셜 자료를 모아 Obsidian과 Notion 흐름에 맞게 정리해주는 도구.
+수집한 자료가 검색 가능한 지식 자산으로 남습니다.
+
+### 글쓰기 · 콘텐츠
+
+#### [clone-n-write](https://github.com/treylom/clone-n-write) — v2.2.0
+실제 저자의 글쓰기 과정과 문체를 복제하고, 결과를 코드 게이트로 검증해 "나다운 글"을 쓰게 해주는 도구.
+감으로 다듬는 대신 코퍼스 통계와 계량 채점으로 문체를 지킵니다.
+
+> **writing-assistant를 쓰고 계셨다면**: clone-n-write가 후속작입니다. 기존 설치는 계속 동작하며, 새로 설치한다면 clone-n-write를 권합니다.
+
+#### [qwen3-tts-claude-skill](https://github.com/treylom/qwen3-tts-claude-skill) — v1.0.0
+작성한 텍스트를 한국어·영어 음성 결과물로 바꿔주는 도구.
+
+### 학습
+
+#### [lesson-skill](https://github.com/treylom/lesson-skill) — v1.0.0
+Claude Code를 1:1 적응형 수업처럼 학습하게 도와주는 도구.
+
+#### [cc-codex-lessons](https://github.com/treylom/lesson-cc-codex) — v0.2.0
+Claude Code + Codex 실습을 1:1로 진행하는 인터랙티브 실습 스킬.
+비개발자 실무자 눈높이로 한 단계씩 진행합니다.
+
+### 스킬 제작 · 워크플로우
+
+#### [skills-2.0-upgrade](https://github.com/treylom/skills-2.0-upgrade) — v1.0.0
+Claude Code 스킬의 품질을 진단하고 2.0 구조로 업그레이드해주는 도구.
+
+#### [tofable-kit](https://github.com/treylom/tofable) — v0.1.0
+일 잘하는 방식(분해 → 프롬프트 정제 → 증거 실행 → 정직한 마감)을 스킬로 장착해주는 도구.
+prompt-engineering-skills와 함께 쓰면 연동되고, 없으면 기본 프롬프팅으로 동작합니다.
+
+### 에이전트 팀 · 작업 환경
+
+#### [tofu-at](https://github.com/treylom/tofu-at) — v2.0.0
+복잡한 작업을 에이전트 팀으로 분해하고 실행 흐름을 잡아주는 도구.
+
+#### [thiscode](https://github.com/treylom/ThisCode) — v1.0.0
+Claude Code 작업 환경(Discord 봇·tmux·훅·운영 규칙)을 한 번에 셋업해주는 번들.
+"에이전트 팀을 어떻게 차리지?"의 시작점을 통째로 제공합니다.
+
+#### [thiscodex](https://github.com/treylom/ThisCodex) — v1.0.0
+Codex CLI 에이전트를 Claude Code 봇처럼 운영하게 해주는 번들 — 페르소나·vault 규율·멀티에이전트 컨벤션 포함.
+thiscode와 짝을 이뤄 Claude·Codex 혼성 팀을 만듭니다.
 
 ## 시너지 가이드
 
 ### 1. 프롬프트 → 지식 → 글쓰기 파이프라인
 새 주제를 빠르게 콘텐츠로 만들고 싶을 때 유용한 조합입니다.
-[prompt-engineering-skills](https://github.com/treylom/prompt-engineering-skills)로 조사 프롬프트와 질문 구조를 먼저 설계하고, [knowledge-manager](https://github.com/treylom/knowledge-manager)로 필요한 자료를 모아 정리한 뒤, [writing-assistant](https://github.com/treylom/writing-assistant)로 초안을 글의 목적과 문체에 맞게 완성합니다.
+[prompt-engineering-skills](https://github.com/treylom/prompt-engineering-skills)로 조사 프롬프트와 질문 구조를 먼저 설계하고, [knowledge-manager](https://github.com/treylom/knowledge-manager)로 필요한 자료를 모아 정리한 뒤, [clone-n-write](https://github.com/treylom/clone-n-write)로 초안을 내 문체에 맞게 완성합니다.
 아이디어 단계에서 막히지 않고, 자료 수집과 집필이 한 흐름으로 이어집니다.
 
 ### 2. 학습 → 스킬 제작 → 팀 운영 성장 경로
@@ -76,17 +132,22 @@ Claude Code를 배우는 단계에서 실제 운영 단계까지 올라가고 �
 
 ### 3. 멀티미디어 콘텐츠 제작
 텍스트를 음성과 아카이브까지 연결하고 싶을 때 추천하는 조합입니다.
-[writing-assistant](https://github.com/treylom/writing-assistant)로 글의 메시지와 톤을 먼저 다듬고, [qwen3-tts-claude-skill](https://github.com/treylom/qwen3-tts-claude-skill)로 음성 버전을 만든 뒤, [knowledge-manager](https://github.com/treylom/knowledge-manager)로 원고와 참고 자료를 함께 정리합니다.
+[clone-n-write](https://github.com/treylom/clone-n-write)로 글의 메시지와 문체를 먼저 다듬고, [qwen3-tts-claude-skill](https://github.com/treylom/qwen3-tts-claude-skill)로 음성 버전을 만든 뒤, [knowledge-manager](https://github.com/treylom/knowledge-manager)로 원고와 참고 자료를 함께 정리합니다.
 콘텐츠 제작과 보관이 분리되지 않아 재사용이 쉬워집니다.
 
 ### 4. 리서치 → 지식 정리 파이프라인
 깊이 있는 조사 결과를 체계적으로 정리하고 싶을 때 맞는 조합입니다.
-[deep-research](https://github.com/treylom/deep-research)로 주제를 교차검증된 보고서로 만들고, [knowledge-manager](https://github.com/treylom/knowledge-manager)로 수집된 소스와 분석을 Obsidian에 정리한 뒤, [writing-assistant](https://github.com/treylom/writing-assistant)로 리서치 결과를 독자 맞춤형 글로 발전시킵니다.
+[deep-research](https://github.com/treylom/deep-research)로 주제를 교차검증된 보고서로 만들고, [knowledge-manager](https://github.com/treylom/knowledge-manager)로 수집된 소스와 분석을 Obsidian에 정리한 뒤, [clone-n-write](https://github.com/treylom/clone-n-write)로 리서치 결과를 독자 맞춤형 글로 발전시킵니다.
 조사와 정리가 분리되지 않아 리서치 자산이 재활용 가능한 형태로 남습니다.
+
+### 5. 작업 환경 → 에이전트 팀 운영
+개인 세팅을 넘어 여러 에이전트가 함께 일하는 환경을 만들고 싶을 때 맞는 조합입니다.
+[thiscode](https://github.com/treylom/ThisCode)로 Claude Code 운영 환경을 통째로 셋업하고, [thiscodex](https://github.com/treylom/ThisCodex)로 Codex 에이전트를 같은 규율 아래 합류시킨 뒤, [tofu-at](https://github.com/treylom/tofu-at)로 팀 단위 작업 분해와 실행을 돌립니다.
+혼자 쓰던 도구 모음이 역할이 나뉜 에이전트 팀으로 확장됩니다.
 
 ## Requirements
 
-- Claude Code 전용 플러그인 마켓플레이스입니다.
+- Claude Code와 ChatGPT(Codex CLI)에서 마켓플레이스로 설치할 수 있고, ChatGPT Work는 플러그인별 직접 등록 방식입니다.
 - Windows 환경에서는 WSL2 사용을 권장합니다.
 
 ## Contributing

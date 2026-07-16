@@ -5,8 +5,8 @@
     "email": "treylom@users.noreply.github.com"
   },
   "metadata": {
-    "description": "Claude Code skills & agents by tofukyung — prompt engineering, knowledge management, AI teaching, writing, and more.",
-    "version": "1.0.0"
+    "description": "Claude Code & Codex plugins by tofukyung — prompt engineering, research, knowledge management, writing, AI teaching, and multi-agent environments.",
+    "version": "2.0.0"
   },
   "plugins": [
     {
@@ -55,13 +55,13 @@
       "version": "1.0.0"
     },
     {
-      "name": "writing-assistant",
+      "name": "clone-n-write",
       "source": {
         "source": "url",
-        "url": "https://github.com/treylom/writing-assistant.git"
+        "url": "https://github.com/treylom/clone-n-write.git"
       },
-      "description": "초안을 나다운 글로 다듬어주는 도구",
-      "version": "1.0.0"
+      "description": "실제 저자의 글쓰기 과정과 문체를 복제하고 코드 게이트로 검증해 나다운 글을 쓰게 해주는 도구",
+      "version": "2.2.0"
     },
     {
       "name": "lesson-skill",
@@ -98,6 +98,24 @@
       },
       "description": "일 잘하는 방식(분해→프롬프트 정제→증거 실행→정직한 마감)을 스킬로 장착해주는 도구 — /prompt와 함께 쓰면 연동, 없으면 기본 프롬프팅으로",
       "version": "0.1.0"
+    },
+    {
+      "name": "thiscode",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/ThisCode.git"
+      },
+      "description": "Claude Code 작업 환경(Discord 봇·tmux·훅·운영 규칙)을 한 번에 셋업해주는 번들",
+      "version": "1.0.0"
+    },
+    {
+      "name": "thiscodex",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/ThisCodex.git"
+      },
+      "description": "Codex CLI 에이전트를 Claude Code 봇처럼 운영하게 해주는 페르소나·규율 번들",
+      "version": "1.0.0"
     }
   ]
 }
