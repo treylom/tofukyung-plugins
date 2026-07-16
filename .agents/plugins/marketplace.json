@@ -1,0 +1,99 @@
+{
+  "name": "tofukyung-plugins",
+  "description": "Claude Code & ChatGPT (Codex) skills & agents by tofukyung — prompt engineering, knowledge management, AI teaching, writing, and more.",
+  "owner": {
+    "name": "tofukyung"
+  },
+  "plugins": [
+    {
+      "name": "prompt-engineering-skills",
+      "description": "아이디어를 실행 가능한 프롬프트로 정리해주는 도구",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/prompt-engineering-skills.git"
+      },
+      "version": "2.10.0"
+    },
+    {
+      "name": "knowledge-manager",
+      "description": "자료를 수집해 지식 자산으로 정리해주는 도구",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/knowledge-manager.git"
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "tofu-at",
+      "description": "에이전트 팀 운영 흐름을 설계해주는 도구",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/tofu-at.git"
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "skills-2.0-upgrade",
+      "description": "Claude Code 스킬을 점검하고 업그레이드해주는 도구",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/skills-2.0-upgrade.git"
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "qwen3-tts-claude-skill",
+      "description": "텍스트를 음성 콘텐츠로 바꿔주는 도구",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/qwen3-tts-claude-skill.git"
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "writing-assistant",
+      "description": "초안을 나다운 글로 다듬어주는 도구",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/writing-assistant.git"
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "lesson-skill",
+      "description": "Claude Code를 1:1 학습 흐름으로 익히게 해주는 도구",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/lesson-skill.git"
+      },
+      "version": "1.0.0"
+    },
+    {
+      "name": "deep-research",
+      "description": "여러 소스를 모아 교차검증하고 인용이 달린 리서치 보고서를 만들어주는 도구",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/deep-research.git"
+      },
+      "version": "2.1.0"
+    },
+    {
+      "name": "cc-codex-lessons",
+      "description": "Claude Code + Codex 실습을 1:1로 진행하는 인터랙티브 실습 스킬 (비개발자 실무자 대상, 패스트캠퍼스 강의용)",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/lesson-cc-codex.git"
+      },
+      "version": "0.2.0"
+    },
+    {
+      "name": "tofable-kit",
+      "description": "일 잘하는 방식(분해→프롬프트 정제→증거 실행→정직한 마감)을 스킬로 장착해주는 도구 — /prompt와 함께 쓰면 연동, 없으면 기본 프롬프팅으로",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/tofable.git"
+      },
+      "version": "0.1.0"
+    }
+  ]
+}

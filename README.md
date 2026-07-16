@@ -9,6 +9,8 @@ AI를 업무에 녹이고 싶은 사람들을 위한 Claude Code 플러그인 �
 
 ## Quick Start
 
+### Claude Code
+
 1. 마켓플레이스를 추가합니다.
 
 ```bash
@@ -28,6 +30,24 @@ AI를 업무에 녹이고 싶은 사람들을 위한 Claude Code 플러그인 �
 ```
 
 플러그인 설치나 업데이트 후에는 Claude Code를 다시 시작하면 가장 안정적으로 반영됩니다.
+
+### ChatGPT (Codex CLI)
+
+같은 저장소가 Codex 플러그인 마켓플레이스도 겸합니다 — 스킬 규격이 [Agent Skills 오픈 표준](https://agentskills.io)으로 동일하기 때문입니다.
+
+1. 마켓플레이스를 추가합니다.
+
+```bash
+codex plugin marketplace add treylom/tofukyung-plugins
+```
+
+2. 원하는 플러그인을 설치합니다.
+
+```bash
+codex plugin add {플러그인명}@tofukyung-plugins
+```
+
+설치 후 Codex를 다시 시작하면 반영됩니다. Codex 지원 매니페스트(`.codex-plugin/plugin.json`)는 각 플러그인 저장소에 순차 추가 중이며, 준비된 플러그인부터 설치할 수 있습니다.
 
 ## Available Plugins
 
