@@ -54,9 +54,9 @@ codex plugin add {플러그인명}@tofukyung-plugins
 
 ### ChatGPT Work
 
-ChatGPT Work는 마켓플레이스(카탈로그) 단위 등록 대신, 쓰려는 **플러그인 저장소를 직접 등록**하는 방식입니다.
-각 플러그인 저장소 README의 ChatGPT Work 설치 안내를 따르면 되고, Work용 매니페스트(`.claude-plugin/`의 marketplace.json + plugin.json 쌍)는 준비된 저장소부터 순차 추가 중입니다.
-이 카탈로그 저장소 자체는 Claude Code와 Codex CLI 전용입니다.
+ChatGPT Work에서는 이 카탈로그 저장소를 **통째로 등록**할 수 있습니다 (2026-07 실기기 검증).
+등록 화면의 출처에 `https://github.com/treylom/tofukyung-plugins`를 넣고, **Git ref에 `master`를 직접 입력**하세요 — 폼 기본값이 `main`이라 그대로 두면 등록에 실패합니다. 등록되면 12개 플러그인이 모두 노출되고 개별 설치할 수 있습니다.
+쓰려는 플러그인 저장소 하나만 직접 등록하는 방식도 그대로 동작합니다(`.claude-plugin/`의 marketplace.json + plugin.json 쌍이 준비된 저장소부터 순차 지원). 단, 같은 플러그인을 카탈로그와 개별 저장소 양쪽에서 설치하면 스킬 목록에 같은 이름이 두 개 보이니 **한쪽 경로만** 쓰는 것을 권합니다.
 
 ## Plugins
 
@@ -148,7 +148,7 @@ Claude Code를 배우는 단계에서 실제 운영 단계까지 올라가고 �
 
 ## Requirements
 
-- Claude Code와 ChatGPT (Codex CLI)에서 마켓플레이스로 설치할 수 있고, ChatGPT Work는 플러그인별 직접 등록 방식입니다.
+- Claude Code, ChatGPT (Codex CLI), ChatGPT Work 세 곳 모두에서 이 저장소를 마켓플레이스로 등록해 설치할 수 있습니다.
 - Windows 환경에서는 WSL2 사용을 권장합니다.
 
 ## Contributing
