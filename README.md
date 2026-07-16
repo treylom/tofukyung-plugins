@@ -55,7 +55,7 @@ codex plugin add {플러그인명}@tofukyung-plugins
 ### ChatGPT Work
 
 ChatGPT Work는 마켓플레이스(카탈로그) 단위 등록 대신, 쓰려는 **플러그인 저장소를 직접 등록**하는 방식입니다.
-각 플러그인 저장소 README의 ChatGPT Work 설치 안내를 따르면 되고, Work용 매니페스트(`plugin.json` 쌍)는 준비된 저장소부터 순차 추가 중입니다.
+각 플러그인 저장소 README의 ChatGPT Work 설치 안내를 따르면 되고, Work용 매니페스트(`.claude-plugin/`의 marketplace.json + plugin.json 쌍)는 준비된 저장소부터 순차 추가 중입니다.
 이 카탈로그 저장소 자체는 Claude Code와 Codex CLI 전용입니다.
 
 ## Plugins
@@ -100,6 +100,7 @@ Claude Code + Codex 실습을 1:1로 진행하는 인터랙티브 실습 스킬.
 
 #### [skills-2.0-upgrade](https://github.com/treylom/skills-2.0-upgrade) — v1.0.0
 Claude Code 스킬의 품질을 진단하고 2.0 구조로 업그레이드해주는 도구.
+Codex CLI 설치명은 `skills-2-0-upgrade`입니다(플러그인 이름에 점을 쓸 수 없어 다릅니다).
 
 #### [tofable-kit](https://github.com/treylom/tofable) — v0.1.0
 일 잘하는 방식(분해 → 프롬프트 정제 → 증거 실행 → 정직한 마감)을 스킬로 장착해주는 도구.
@@ -147,7 +148,7 @@ Claude Code를 배우는 단계에서 실제 운영 단계까지 올라가고 �
 
 ## Requirements
 
-- Claude Code와 ChatGPT(Codex CLI)에서 마켓플레이스로 설치할 수 있고, ChatGPT Work는 플러그인별 직접 등록 방식입니다.
+- Claude Code와 ChatGPT (Codex CLI)에서 마켓플레이스로 설치할 수 있고, ChatGPT Work는 플러그인별 직접 등록 방식입니다.
 - Windows 환경에서는 WSL2 사용을 권장합니다.
 
 ## Contributing

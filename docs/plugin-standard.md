@@ -6,6 +6,9 @@
 .
 ├── .claude-plugin/
 │   └── marketplace.json
+├── .agents/
+│   └── plugins/
+│       └── marketplace.json
 ├── docs/
 │   └── plugin-standard.md
 └── README.md
@@ -13,7 +16,8 @@
 
 ## 디렉터리 역할
 
-- `.claude-plugin/marketplace.json`: 마켓플레이스 메타데이터를 관리합니다.
+- `.claude-plugin/marketplace.json`: 마켓플레이스 메타데이터를 관리합니다 (Claude Code용).
+- `.agents/plugins/marketplace.json`: 같은 카탈로그의 Codex CLI용 사본입니다 — 엔트리 추가·변경 시 두 파일을 함께 갱신합니다.
 - `README.md`: 저장소 소개, 설치 방법, 플러그인 목록, 추천 조합을 안내합니다.
 - `docs/`: 운영 가이드나 작성 규칙처럼 저장소 공통 문서를 둡니다.
 
