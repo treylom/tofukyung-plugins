@@ -112,6 +112,15 @@
         "url": "https://github.com/treylom/ThisCodex.git"
       },
       "version": "1.0.0"
+    },
+    {
+      "name": "tofugraph",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/tofugraph.git"
+      },
+      "description": "Obsidian 지식 그래프 위 GraphRAG 검색 구축·운영 (/tofugraph)",
+      "version": "0.1.0"
     }
   ]
 }

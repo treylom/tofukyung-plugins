@@ -116,6 +116,15 @@
       },
       "description": "Codex CLI 에이전트를 Claude Code 봇처럼 운영하게 해주는 페르소나·규율 번들",
       "version": "1.0.1"
+    },
+    {
+      "name": "tofugraph",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/tofugraph.git"
+      },
+      "description": "Obsidian 지식 그래프 위 GraphRAG 검색 구축·운영 (/tofugraph)",
+      "version": "0.1.0"
     }
   ]
 }
