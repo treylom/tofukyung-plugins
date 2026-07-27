@@ -124,7 +124,7 @@
         "url": "https://github.com/treylom/tofugraph.git"
       },
       "description": "Obsidian 지식 그래프 위 GraphRAG 검색 구축·운영 (/tofugraph)",
-      "version": "0.3.0"
+      "version": "0.3.1"
     }
   ]
 }
