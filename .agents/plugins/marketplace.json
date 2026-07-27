@@ -119,8 +119,8 @@
         "source": "url",
         "url": "https://github.com/treylom/tofugraph.git"
       },
-      "description": "Obsidian 지식 그래프 위 GraphRAG 검색 구축·운영 (/tofugraph)",
-      "version": "0.1.0"
+      "description": "Obsidian 지식 그래프 위 GraphRAG 검색 구축·운영 (Claude: /tofugraph:links 등 · Codex: $tofugraph-links 등)",
+      "version": "0.3.2"
     }
   ]
 }
