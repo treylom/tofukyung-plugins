@@ -12,16 +12,16 @@
         "source": "url",
         "url": "https://github.com/treylom/prompt-engineering-skills.git"
       },
-      "version": "2.10.0"
+      "version": "2.11.3"
     },
     {
-      "name": "knowledge-manager",
+      "name": "km",
       "description": "자료를 수집해 지식 자산으로 정리해주는 도구",
       "source": {
         "source": "url",
         "url": "https://github.com/treylom/knowledge-manager.git"
       },
-      "version": "1.0.0"
+      "version": "1.2.0"
     },
     {
       "name": "tofu-at",
@@ -30,7 +30,7 @@
         "source": "url",
         "url": "https://github.com/treylom/tofu-at.git"
       },
-      "version": "2.0.0"
+      "version": "2.0.1"
     },
     {
       "name": "skills-2-0-upgrade",
@@ -66,7 +66,7 @@
         "source": "url",
         "url": "https://github.com/treylom/lesson-skill.git"
       },
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "deep-research",
@@ -75,7 +75,7 @@
         "source": "url",
         "url": "https://github.com/treylom/deep-research.git"
       },
-      "version": "2.1.0"
+      "version": "2.1.1"
     },
     {
       "name": "cc-codex-lessons",
@@ -84,7 +84,7 @@
         "source": "url",
         "url": "https://github.com/treylom/lesson-cc-codex.git"
       },
-      "version": "0.2.0"
+      "version": "0.2.2"
     },
     {
       "name": "tofable-kit",
@@ -102,7 +102,7 @@
         "source": "url",
         "url": "https://github.com/treylom/ThisCode.git"
       },
-      "version": "1.0.0"
+      "version": "1.2.0"
     },
     {
       "name": "thiscodex",
@@ -111,7 +111,7 @@
         "source": "url",
         "url": "https://github.com/treylom/ThisCodex.git"
       },
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "name": "tofugraph",

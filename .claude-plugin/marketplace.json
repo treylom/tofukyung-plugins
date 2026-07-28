@@ -19,13 +19,13 @@
       "version": "2.11.3"
     },
     {
-      "name": "knowledge-manager",
+      "name": "km",
       "source": {
         "source": "url",
         "url": "https://github.com/treylom/knowledge-manager.git"
       },
       "description": "자료를 수집해 지식 자산으로 정리해주는 도구",
-      "version": "1.1.1"
+      "version": "1.2.0"
     },
     {
       "name": "tofu-at",
@@ -64,7 +64,7 @@
       "version": "2.2.0"
     },
     {
-      "name": "lesson-skill",
+      "name": "lesson",
       "source": {
         "source": "url",
         "url": "https://github.com/treylom/lesson-skill.git"
