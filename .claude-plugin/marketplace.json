@@ -25,7 +25,7 @@
         "url": "https://github.com/treylom/knowledge-manager.git"
       },
       "description": "자료를 수집해 지식 자산으로 정리해주는 도구",
-      "version": "1.2.0"
+      "version": "1.2.1"
     },
     {
       "name": "tofu-at",
