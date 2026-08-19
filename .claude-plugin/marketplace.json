@@ -134,6 +134,15 @@
       },
       "description": "Obsidian 지식 그래프 위 GraphRAG 검색 구축·운영 (Claude: /tofugraph:links 등 · Codex: $tofugraph-links 등)",
       "version": "0.4.4"
+    },
+    {
+      "name": "tofu-hostinger",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/treylom/tofu-hostinger.git"
+      },
+      "description": "Hostinger VPS 에 Claude Code 봇을 올리는 단계별 설치 코파일럿 — :vps·:cc·:bot·:std-bot 4루트, 실측 기반 함정 안내",
+      "version": "1.0.0"
     }
   ]
 }
