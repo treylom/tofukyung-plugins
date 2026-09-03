@@ -70,12 +70,12 @@
     },
     {
       "name": "searchflow",
-      "description": "질문을 여러 갈래로 쪼개 근거를 모으고, 약한 갈래만 다시 조사해 인용이 달린 보고서를 만들어주는 도구 (구명: deep-research)",
+      "description": "질문을 여러 갈래로 쪼개 근거를 모으고, 약한 갈래만 다시 조사해 인용이 달린 보고서를 만들어주는 도구",
       "source": {
         "source": "url",
         "url": "https://github.com/treylom/deep-research.git"
       },
-      "version": "3.0.1"
+      "version": "3.0.2"
     },
     {
       "name": "cc-codex-lessons",

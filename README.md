@@ -66,7 +66,7 @@ ChatGPT Work에서는 이 카탈로그 저장소를 **통째로 등록**할 수 
 아이디어를 바로 실행 가능한 프롬프트와 GPTs/Gems 초안으로 바꿔주는 도구.
 모델별(Claude·GPT·Gemini·이미지·영상) 최적화 템플릿과 자동 개선 루프를 담았습니다.
 
-#### [deep-research](https://github.com/treylom/deep-research) — v2.1.0
+#### [searchflow](https://github.com/treylom/deep-research) — v3.0.2 (구 이름 deep-research · 저장소 이름은 그대로)
 여러 소스를 모아 교차검증하고 인용이 달린 리서치 보고서를 만들어주는 도구.
 조사 결과에 근거와 신뢰도가 함께 남습니다.
 
@@ -138,7 +138,7 @@ Claude Code를 배우는 단계에서 실제 운영 단계까지 올라가고 �
 
 ### 4. 리서치 → 지식 정리 파이프라인
 깊이 있는 조사 결과를 체계적으로 정리하고 싶을 때 맞는 조합입니다.
-[deep-research](https://github.com/treylom/deep-research)로 주제를 교차검증된 보고서로 만들고, [knowledge-manager](https://github.com/treylom/knowledge-manager)로 수집된 소스와 분석을 Obsidian에 정리한 뒤, [clone-n-write](https://github.com/treylom/clone-n-write)로 리서치 결과를 독자 맞춤형 글로 발전시킵니다.
+[searchflow](https://github.com/treylom/deep-research)로 주제를 교차검증된 보고서로 만들고, [knowledge-manager](https://github.com/treylom/knowledge-manager)로 수집된 소스와 분석을 Obsidian에 정리한 뒤, [clone-n-write](https://github.com/treylom/clone-n-write)로 리서치 결과를 독자 맞춤형 글로 발전시킵니다.
 조사와 정리가 분리되지 않아 리서치 자산이 재활용 가능한 형태로 남습니다.
 
 ### 5. 작업 환경 → 에이전트 팀 운영
