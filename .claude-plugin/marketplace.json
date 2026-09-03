@@ -79,7 +79,7 @@
         "url": "https://github.com/treylom/deep-research.git"
       },
       "description": "질문을 여러 갈래로 쪼개 근거를 모으고, 약한 갈래만 다시 조사해 인용이 달린 보고서를 만들어주는 도구",
-      "version": "3.0.2"
+      "version": "3.0.3"
     },
     {
       "name": "cc-codex-lessons",
