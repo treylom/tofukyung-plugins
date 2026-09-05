@@ -115,7 +115,7 @@
         "url": "https://github.com/treylom/ThisCodex.git"
       },
       "description": "Codex CLI 에이전트를 Claude Code 봇처럼 운영하게 해주는 페르소나·규율 번들",
-      "version": "1.1.1"
+      "version": "1.1.2"
     },
     {
       "name": "tofugraph",
