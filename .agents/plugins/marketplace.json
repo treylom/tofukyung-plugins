@@ -33,7 +33,7 @@
       "version": "2.0.1"
     },
     {
-      "name": "skills-2-0-upgrade",
+      "name": "skills-2.0-upgrade",
       "description": "Claude Code 스킬을 점검하고 업그레이드해주는 도구",
       "source": {
         "source": "url",
@@ -60,7 +60,7 @@
       "version": "2.2.0"
     },
     {
-      "name": "lesson-skill",
+      "name": "lesson",
       "description": "Claude Code를 1:1 학습 흐름으로 익히게 해주는 도구",
       "source": {
         "source": "url",
