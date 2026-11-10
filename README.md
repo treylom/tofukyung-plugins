@@ -62,7 +62,7 @@ ChatGPT Work에서는 이 카탈로그 저장소를 **통째로 등록**할 수 
 
 ### 프롬프트 · 리서치
 
-#### [prompt-engineering-skills](https://github.com/treylom/prompt-engineering-skills) — v2.10.0
+#### [prompt-engineering-skills](https://github.com/treylom/prompt-engineering-skills) — v3.5.1
 아이디어를 바로 실행 가능한 프롬프트와 GPTs/Gems 초안으로 바꿔주는 도구.
 모델별(Claude·GPT·Gemini·이미지·영상) 최적화 템플릿과 자동 개선 루프를 담았습니다.
 
